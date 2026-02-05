@@ -137,5 +137,94 @@ int music_formatted_print (FILE * pf, const void * m) {
 	return counter;
 }
 
+void music_free (void * m){
+  if(m == NULL){
+    return;
+  }
+  
+  free(m);
+  return;
+}
+
+long music_getId (const Music * m){
+  if(m == NULL ||m->id == NULL){
+    return -1;
+  }
+
+  return m->id;
+}
+
+const char* music_getTitle (const Music * m){
+  char *x;
+  if(m == NULL || m->title == NULL){
+    return NULL;
+  }
+
+  return m->title;
+
+}
+
+
+
+const char* music_getArtist (const Music * m){
+  if(m == NULL || m->artist == NULL){
+    return NULL;
+  }
+
+  return m->artist;
+
+}
+
+unsigned short music_getDuration (const Music * m){
+  if(m == NULL || m->duration == NULL){
+    return -1;
+  }
+
+  return m->duration;
+
+}
+
+State music_getState (const Music * m){
+  if(m == NULL || m->state == NULL){
+    return ERROR_MUSIC;
+  }
+
+  return m->state;
+}
+
+Status music_setId (Music * m, const long id){
+if(m == NULL || m->id == NULL || id >= 0){
+  return ERROR;
+}
+
+return OK;
+
+}
+
+Status music_setTitle (Music * m, const char * title){
+
+  if(m == NULL || strlen(title) > STR_LENGTH || m->title == NULL){
+    return ERROR;
+  }
+
+  return OK;
+
+}
+
+Status music_setArtist (Music * m, const char * artist){
+  if(m == NULL || strlen(artist) > STR_LENGTH || m->artist == NULL){
+    return ERROR;
+  }
+
+  return OK;
+
+}
+
+/*Falta por hacer
+Status music_setDuration (Music * m, const unsigned short duration){
+  if(m == NULL|| m->duration == NULL ||)
+}
+  */
+
 
 
