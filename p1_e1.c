@@ -21,7 +21,7 @@ int main()
     if (music_setDuration(Cancion1, 200) == ERROR) {return -1;}
     if (music_setState(Cancion1, NOT_LISTENED) == ERROR) {return -1;}
 
-    if (music_setId(Cancion1, 20) == ERROR) {return -1;}
+    if (music_setId(Cancion2, 20) == ERROR) {return -1;}
     if (music_setTitle(Cancion2, "Bohemian Rhapsody") == ERROR) {return -1;}
     if (music_setArtist(Cancion2, "Queen") == ERROR) {return -1;}
     if (music_setDuration(Cancion2, 355) == ERROR) {return -1;}
@@ -60,7 +60,7 @@ int main()
     if (music_formatted_print(pf, Cancion1) == -1) {return -1;}
     if (music_formatted_print(pf, Cancion3) == -1) {return -1;}
 
-    fprintf(pf, "Equals? ");
+    fprintf(pf, "   Equals? ");
 
 
     /*Compare both songs and show a message with the result*/
