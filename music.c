@@ -53,6 +53,24 @@ Status music_setField (Music *m, char *key, char *value) {
 }
 
 /*----------------------------------------------------------------------------------------*/
+Music * music_init (){
+  Music *m = NULL;
+
+  if(!(m = (Music*)malloc(1*sizeof(Music)))){
+    return NULL;
+  }
+
+  m->id = 0;
+  m->title[0] = '\0';
+  m->artist[0] = '\0';
+  m->duration = 0;
+  m->state = NOT_LISTENED;
+
+  return m;
+}
+
+
+
 Music *music_initFromString(char *descr) {
   Music *m;
   char *p;
@@ -287,27 +305,14 @@ void * music_copy (const void * src)
 
 int music_plain_print (FILE * pf, const void * m)
 {
-  int n=0;
-  char aux;
+  int counter =0;
   if(pf == NULL || m == NULL){
     return -1;
   }
 
-  if(!(pf = fopen("test.txt", "w"))){
-    return -1;
-  }
-
-  printf(pf, "id: \"%li\", title: \"%s\", artist: \"%s\", duration: \"%hd\", state: \"%d\"", music_getId(m), music_getTitle(m), music_getArtist(m), music_getDuration(m), music_getState(m));
+  counter = fprintf(pf, "id: \"%li\", title: \"%s\", artist: \"%s\", duration: \"%hd\", state: \"%d\"", music_getId(m), music_getTitle(m), music_getArtist(m), music_getDuration(m), music_getState(m));
   fclose(pf);
 
-  pf = fopen("test.txt", "w");
-  
-
-  while (fscanf(pf,"%c", &aux) == 1);
-  {
-    n++;
-  }
-  fclose(pf);
-  return n;
+  return counter;
 }
 
