@@ -55,13 +55,11 @@ int main()
     /*Prints the id of the third song*/
     fprintf(pf, "Music 3 id: %li\n", music_getId(Cancion3));
 
-
     /*Reproduces the first and the third song*/
     if (music_formatted_print(pf, Cancion1) == -1) {return -1;}
     if (music_formatted_print(pf, Cancion3) == -1) {return -1;}
 
-    fprintf(pf, "   Equals? ");
-
+    fprintf(pf, "\nEquals? ");
 
     /*Compare both songs and show a message with the result*/
     if (music_cmp(Cancion1, Cancion3) == 0) /*if both songs are equal*/
