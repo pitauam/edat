@@ -42,9 +42,9 @@ int main()
     /*Compare both songs and show a message with the result*/
     if (music_cmp(Cancion1, Cancion2) == 0) /*if both songs are equal*/
     {
-        printf("No\n");
+        printf("Yes\n");
     }
-    else {printf("Yes\n");}
+    else {printf("No\n");}
 
     /*Prints the title of the second song*/
     printf("Music 2 title: %s\n", music_getTitle(Cancion2));
@@ -65,9 +65,9 @@ int main()
     /*Compare both songs and show a message with the result*/
     if (music_cmp(Cancion1, Cancion3) == 0) /*if both songs are equal*/
     {
-        printf("No\n");
+        printf("Yes\n");
     }
-    else {printf("Yes\n");}
+    else {printf("No\n");}
   
     /*Frees memory*/
     music_free(Cancion1);
