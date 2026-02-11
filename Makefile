@@ -11,7 +11,7 @@ OBJECTSP1E3 = p1_e3.o radio.o music.o
 
 all: $(EJS) clear
 
-p1_e1: $(OBJECTSP1E1)
+p1_e1: $(OBJECTSP1E1) types.h music.h
 	$(CC) $(CFLAGS) -o p1_e1 $(OBJECTSP1E1)
 
 p1_e2: $(OBJECTSP1E2)
