@@ -265,9 +265,11 @@ int music_cmp (const void * m1, const void * m2)
   id2 = music_getId(m2);
 
   if(id1 == id2){
-    if(strcmp(music_getTitle(m1),music_getTitle(m2))){
+    
+    if(strcmp(music_getTitle(m1),music_getTitle(m2)) == 0){
 
-        if(strcmp(music_getArtist(m1),music_getArtist(m2))){
+        if(strcmp(music_getArtist(m1),music_getArtist(m2)) == 0){
+
           return 0;
 
         }else{
