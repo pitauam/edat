@@ -147,7 +147,7 @@ void music_free (void * m){
 }
 
 long music_getId (const Music * m){
-  if(m == NULL ||m->id == NULL){
+  if(m == NULL){
     return -1;
   }
 
@@ -155,7 +155,6 @@ long music_getId (const Music * m){
 }
 
 const char* music_getTitle (const Music * m){
-  char *x;
   if(m == NULL || m->title == NULL){
     return NULL;
   }
@@ -176,7 +175,7 @@ const char* music_getArtist (const Music * m){
 }
 
 unsigned short music_getDuration (const Music * m){
-  if(m == NULL || m->duration == NULL){
+  if(m == NULL || m->duration > 0){
     return -1;
   }
 
@@ -185,7 +184,7 @@ unsigned short music_getDuration (const Music * m){
 }
 
 State music_getState (const Music * m){
-  if(m == NULL || m->state == NULL){
+  if(m == NULL){
     return ERROR_MUSIC;
   }
 
@@ -193,9 +192,11 @@ State music_getState (const Music * m){
 }
 
 Status music_setId (Music * m, const long id){
-if(m == NULL || m->id == NULL || id >= 0){
+if(m == NULL || id >= 0){
   return ERROR;
 }
+
+m->id = id;
 
 return OK;
 
@@ -203,28 +204,96 @@ return OK;
 
 Status music_setTitle (Music * m, const char * title){
 
-  if(m == NULL || strlen(title) > STR_LENGTH || m->title == NULL){
+  if(m == NULL || strlen(title) < STR_LENGTH || m->title == NULL){
     return ERROR;
   }
+  
+  strcpy(m->title, title);
 
   return OK;
 
 }
 
 Status music_setArtist (Music * m, const char * artist){
-  if(m == NULL || strlen(artist) > STR_LENGTH || m->artist == NULL){
+  if(m == NULL || strlen(artist) < STR_LENGTH || m->artist == NULL){
     return ERROR;
   }
+
+  strcpy(m->artist, artist);
 
   return OK;
 
 }
 
-/*Falta por hacer
+
 Status music_setDuration (Music * m, const unsigned short duration){
-  if(m == NULL|| m->duration == NULL ||)
+  if(m == NULL|| m->duration >= 0){/*hay que sevisar esto*/
+    return ERROR;
+  }
+
+  m->duration = duration;
+
+  return OK;
 }
-  */
+  
+Status music_setState (Music * m, const State state){
+  if(m == NULL){ /*falta por revisar state*/
+    return ERROR;
+  }
+
+  m->state = state;
+
+  return OK;
+}
+
+int music_cmp (const void * m1, const void * m2){
+  long id1, id2;
+  char name1[STR_LENGTH], name2[STR_LENGTH], artist1[STR_LENGTH], artist2[STR_LENGTH];
+
+  id1 = music_getId(m1);
+  id2 = music_getId(m2);
+
+  if(id1 == id2){
+    if(strcmp(music_getTitle(m1),music_getTitle(m2))){
+
+        if(strcmp(music_getArtist(m1),music_getArtist(m2))){
+          return 0;
+
+        }else{
+          return 1;
+        }
+
+    }else{
+      return 1;
+    }
+
+  } else{
+    return 1;
+  }
+}
+
+void * music_copy (const void * src){
+  Music *trc = NULL;
+  if(src == NULL){
+    return NULL;
+  }
+
+  if(!(trc = (Music*)malloc(1*sizeof(Music)))){
+    return NULL;
+  }
+
+  trc->id = music_getId(src);
+  strcpy(trc->artist,music_getArtist(src));
+  strcpy(trc->title,music_getTitle(src));
+  trc->duration = music_getDuration(src);
+  trc->state = music_getState(src);
+
+  return trc;
+}
+
+int music_plain_print (FILE * pf, const void * m){
+
+  
 
 
-
+}
