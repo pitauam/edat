@@ -287,14 +287,27 @@ void * music_copy (const void * src)
 
 int music_plain_print (FILE * pf, const void * m)
 {
-
+  int n=0;
+  char aux;
   if(pf == NULL || m == NULL){
     return -1;
   }
 
-  if(!(pf = fopen("radio.txt", "w"))){
-
-    
+  if(!(pf = fopen("test.txt", "w"))){
+    return -1;
   }
 
+  printf(pf, "id: \"%li\", title: \"%s\", artist: \"%s\", duration: \"%hd\", state: \"%d\"", music_getId(m), music_getTitle(m), music_getArtist(m), music_getDuration(m), music_getState(m));
+  fclose(pf);
+
+  pf = fopen("test.txt", "w");
+  
+
+  while (fscanf(pf,"%c", &aux) == 1);
+  {
+    n++;
+  }
+  fclose(pf);
+  return n;
 }
+
