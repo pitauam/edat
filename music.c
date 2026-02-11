@@ -285,7 +285,13 @@ void * music_copy (const void * src)
 int music_plain_print (FILE * pf, const void * m)
 {
 
-  
+  if(pf == NULL || m == NULL){
+    return -1;
+  }
 
+  if(!(pf = fopen("radio.txt", "w"))){
+
+    
+  }
 
 }
