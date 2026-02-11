@@ -180,9 +180,9 @@ State music_getState (const Music * m){
   return m->state;
 }
 
-Status music_setId (Music * m, const long id)
+Status music_setId (Music * m, const long id) /*Como el id tiene que ser mayor o igual a 0, si id < 0 return error*/
 {
-  if(m == NULL || id >= 0){
+  if(m == NULL || id < 0){
     return ERROR;
   }
 
@@ -193,7 +193,7 @@ Status music_setId (Music * m, const long id)
 
 Status music_setTitle (Music * m, const char * title)
 {
-  if(m == NULL || strlen(title) < STR_LENGTH){
+  if(m == NULL || strlen(title) > STR_LENGTH){
     return ERROR;
   }
   
@@ -204,7 +204,7 @@ Status music_setTitle (Music * m, const char * title)
 
 Status music_setArtist (Music * m, const char * artist)
 {
-  if(m == NULL || strlen(artist) < STR_LENGTH){
+  if(m == NULL || strlen(artist) > STR_LENGTH){
     return ERROR;
   }
 
@@ -216,7 +216,7 @@ Status music_setArtist (Music * m, const char * artist)
 
 Status music_setDuration (Music * m, const unsigned short duration)
 {
-  if(m == NULL|| m->duration >= 0){/*hay que sevisar esto*/
+  if(m == NULL|| duration <= 0){
     return ERROR;
   }
 
@@ -238,6 +238,9 @@ Status music_setState (Music * m, const State state)
 
 int music_cmp (const void * m1, const void * m2)
 {
+  if (m1 == NULL || m2 == NULL){
+    return -1;
+  }
   long id1, id2;
 
   id1 = music_getId(m1);
