@@ -10,6 +10,7 @@
 
 #ifndef RADIO_H
 #define RADIO_H
+#define MAX_MSC 4096
 
 #include "music.h"
 

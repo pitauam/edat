@@ -1,7 +1,7 @@
 ########################################################
 CC=gcc
 CFLAGS= -g -Wall -pedantic
-EJS = p1_e1
+EJS = p1_e2
 #EJS = p1_e1 p1_e2 p1_e3
 ########################################################
 OBJECTSP1E1 = p1_e1.o music.o
@@ -14,7 +14,7 @@ all: $(EJS) clear
 p1_e1: $(OBJECTSP1E1) types.h music.h
 	$(CC) $(CFLAGS) -o p1_e1 $(OBJECTSP1E1)
 
-p1_e2: $(OBJECTSP1E2)
+p1_e2: $(OBJECTSP1E2) radio.h music.h types.h
 	$(CC) $(CFLAGS) -o p1_e2 $(OBJECTSP1E2)
 
 p1_e3: $(OBJECTSP1E3)
@@ -33,8 +33,8 @@ p1_e1.o: p1_e1.c music.h types.h
 music.o: music.c music.h types.h
 	$(CC) $(CFLAGS) -c music.c
 
-#radio.o: radio.c radio.h music.h
-#	$(CC) $(CFLAGS) -c radio.c
+radio.o: radio.c radio.h music.h
+	$(CC) $(CFLAGS) -c radio.c
 
 clear:
 	rm -rf *.o 
