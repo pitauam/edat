@@ -35,7 +35,7 @@ void radio_free(Radio *r){
 
 
 Status radio_newMusic(Radio *r, char *desc){
-
+    if (r == NULL ) {return ERROR;}
     Music *music;
     long musicid;
     int i;
@@ -54,14 +54,53 @@ Status radio_newMusic(Radio *r, char *desc){
 
     r->num_music++;
     r->songs[r->num_music] = music;
-    
+
     return OK;
 }
 
 
-Status radio_newRelation(Radio *r, long orig, long dest);
+Status radio_newRelation(Radio *r, long orig, long dest){
 
-Bool radio_contains(const Radio *r, long id);
+    int i;
+    if (r == NULL){return ERROR;}
+    int music_exists_in_radio = 0;
+
+    for (i = 0; i < r->num_music; i++)
+    {
+        if ((music_getId(r->songs[i]) == dest))
+        {
+            music_exists_in_radio = 1;
+        }
+        if ((music_getId(r->songs[i]) == orig))
+        {
+            music_exists_in_radio = 1;
+        }
+    }
+
+    if (music_exists_in_radio == 0) {return ERROR;}
+
+    r->relations[r->num_music][r->num_relations] = TRUE;
+
+    r->num_relations++;
+
+    /*falta terminar esta funcion*/
+    
+    return OK;
+}
+
+Bool radio_contains(const Radio *r, long id){
+
+    int i;
+    for (i = 0; i < r->num_music; i++)
+    {
+        if (music_getId(r->songs[i]) == id)
+        {
+            return OK;
+        }
+    }
+
+
+}
 
 int radio_getNumberOfMusic(const Radio *r);
 
