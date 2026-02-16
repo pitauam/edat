@@ -88,11 +88,13 @@ Status radio_newRelation(Radio *r, long orig, long dest){
             p2 = i;
         }
     }
-    /*origin song is related to destination song*/
-    r->relations[p1][p2] = TRUE; 
 
-    /*adds one relation created*/
-    r->num_relations++;
+    /*if origin song is not related to destination song then sum one relation and set that relation to true*/
+    if (r->relations[p1][p2] == FALSE) 
+        {
+            r->relations[p1][p2] = TRUE;
+            r->num_relations++;
+        }
 
     return OK;
 }

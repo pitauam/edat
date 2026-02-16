@@ -47,13 +47,13 @@ run:
 	./p1_e1
 	@echo ">>>>>>Running p1_e2"
 	./p1_e2 
-	@echo ">>>>>>Running p1_e3"
-	./p1_e3 g1.txt
+#	@echo ">>>>>>Running p1_e3"
+#	./p1_e3 g1.txt
 
 runv:
 	@echo ">>>>>>Running p1_e1 with valgrind"
 	valgrind --leak-check=full ./p1_e1
 	@echo ">>>>>>Running p1_e2 with valgrind"
 	valgrind --leak-check=full --track-origins=yes ./p1_e2 
-	@echo ">>>>>>Running p1_e3 with valgrind"
-	valgrind --leak-check=full ./p1_e3 radio1.txt
+#	@echo ">>>>>>Running p1_e3 with valgrind"
+#	valgrind --leak-check=full ./p1_e3 radio1.txt
