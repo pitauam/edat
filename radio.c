@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#define STR_LENGTH 64
+
 struct _Radio{
     Music *songs[MAX_MSC];           /*Array with the radio music*/
     Bool relations[MAX_MSC][MAX_MSC];/*Adjacency Matrix*/
@@ -41,8 +43,6 @@ void radio_free(Radio *r){
 Status radio_newMusic(Radio *r, char *desc){
     if (r == NULL || desc == NULL) {return ERROR;}
     Music *music;
-    long musicid;
-    int i;
 
     /*musicid = music_getId(music);
     if (musicid == -1) {return ERROR;}*/
@@ -247,9 +247,72 @@ int radio_print (FILE *pf, const Radio *r){
 
 Status radio_readFromFile (FILE *fin, Radio *r){
 
+    int i; /*int for the loop*/
+    int n_songs;
+    char line[1024];
+    char *ptr;
+
+    long orig, dest; /*used to create a new relation*/
+    
+
+    if (fin == NULL || r == NULL)
+    {
+        return ERROR;
+    }
+    /*reads number of songs*/
+    fscanf(fin, "%i", &n_songs);
+
+    /*reads the n_songs songs and sets parameters for each song */
+
+    for (i = 0; i < n_songs; i++) {
+        if (fgets(line, sizeof(line), fin) != NULL) 
+        {
+            r->songs[i] = music_initFromString(line);
+        }
+    }
+
+    /*relation_count = 0;
+    while(fscanf(fin, "%i %i") >=2)
+    {
+        relation_count;
+    }*/
+
+    while (fgets(line, sizeof(line), fin) != NULL) {
+        /* Extraemos el primer ID: el ORIGEN */
+        ptr = strtok(line, " \t\n\r");
+        if (!ptr) continue; /* Línea vacía */
+        orig = atol(ptr);
+
+        /* Los siguientes IDs en la MISMA línea son los DESTINOS */
+        while ((ptr = strtok(NULL, " \t\n\r")) != NULL) {
+            dest = atol(ptr);
+            radio_newRelation(r, orig, dest);
+        }
+    }
+
+    /*
+    for (i = 0; i < relation_count; i++)
+    {
+
+        if (fscanf(fin, "%li %li", &orig, &dest) == 2)
+        {
+            radio_newRelation(r, orig,dest);
+
+        }
+        else if (fscanf(fin, "%li %li %li", &orig, &dest, &id3) == 3)
+        {
+
+
+        }
 
 
 
+    }
+
+
+        //radio_newRelation(r, orig,dest);
+
+        */
 
     return OK;
 }

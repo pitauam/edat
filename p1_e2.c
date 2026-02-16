@@ -62,4 +62,6 @@ int main(){
 
     radio_free(radio);
 
+    return 0;
+
 }
