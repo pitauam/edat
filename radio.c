@@ -49,11 +49,16 @@ Status radio_newMusic(Radio *r, char *desc){
     music = music_initFromString(desc);
     if (!music) {return ERROR;}
 
-    if (radio_contains(r, music_getId(music)) == TRUE){return OK;}
+    if (radio_contains(r, music_getId(music)) == TRUE){
+        music_free(music);
+        return OK;
+    }
     
 
     r->songs[r->num_music] = music;
     r->num_music++;
+
+
     return OK;
 }
 
@@ -61,7 +66,8 @@ Status radio_newMusic(Radio *r, char *desc){
 Status radio_newRelation(Radio *r, long orig, long dest){
     int i;
 
-    int p1,p2; /*p1 y p2 son el indice donde estan ubicados los id de orig y dest*/
+    int p1 = -1;
+    int p2 = -1; /*p1 y p2 son el indice donde estan ubicados los id de orig y dest*/
     if (r == NULL){return ERROR;}
     if (orig == dest) {return ERROR;} /*si dest = orig hay un error*/
 
@@ -118,7 +124,9 @@ int radio_getNumberOfRelations(const Radio *r){
 
 
 Bool radio_relationExists(const Radio *r, long orig, long dest){
-    int i,p1,p2;
+    int i;
+    int p1 = -1;
+    int p2 = -1;
     if (r == NULL){return FALSE;}
     if (orig == dest) {return FALSE;}
     
@@ -133,7 +141,7 @@ Bool radio_relationExists(const Radio *r, long orig, long dest){
         {
             p1 = i;
         }
-        if (music_getId(r->songs[i]) == orig)
+        if (music_getId(r->songs[i]) == dest)
         {
             p2 = i;
         }
@@ -244,75 +252,47 @@ int radio_print (FILE *pf, const Radio *r){
     return total_chars;
 }
 
-
-Status radio_readFromFile (FILE *fin, Radio *r){
-
-    int i; /*int for the loop*/
-    int n_songs;
+Status radio_readFromFile(FILE *fin, Radio *r) {
+    int i, n_songs;
     char line[1024];
     char *ptr;
+    long orig, dest;
 
-    long orig, dest; /*used to create a new relation*/
+    if (fin == NULL || r == NULL) return ERROR;
+
+    /* 1. Leer el número total de canciones */
+    if (fscanf(fin, "%d", &n_songs) != 1) return ERROR;
     
+    /* LIMPIEZA DEL BUFFER: fscanf deja el carácter de salto de línea '\n' en el stream.
+       Es fundamental leerlo/limpiarlo para que el siguiente fgets no lea una línea vacía. */
+    fgets(line, sizeof(line), fin); 
 
-    if (fin == NULL || r == NULL)
-    {
-        return ERROR;
-    }
-    /*reads number of songs*/
-    fscanf(fin, "%i", &n_songs);
-
-    /*reads the n_songs songs and sets parameters for each song */
-
+    /* 2. Leer las descripciones de música una por una */
     for (i = 0; i < n_songs; i++) {
-        if (fgets(line, sizeof(line), fin) != NULL) 
-        {
-            r->songs[i] = music_initFromString(line);
+        if (fgets(line, sizeof(line), fin) != NULL) {
+            /* IMPORTANTE: Usamos radio_newMusic. Esta función se encarga de:
+               - Crear el objeto Music con music_initFromString.
+               - Comprobar duplicados.
+               - Incrementar r->num_music (vital para que el resto del TAD funcione). */
+            radio_newMusic(r, line); 
         }
     }
 
-    /*relation_count = 0;
-    while(fscanf(fin, "%i %i") >=2)
-    {
-        relation_count;
-    }*/
-
+    /* 3. Leer las relaciones (una línea por cada origen hasta el final del fichero) */
     while (fgets(line, sizeof(line), fin) != NULL) {
-        /* Extraemos el primer ID: el ORIGEN */
+        /* Extraemos el primer ID de la línea, que actúa como ORIGEN */
         ptr = strtok(line, " \t\n\r");
-        if (!ptr) continue; /* Línea vacía */
+        if (ptr == NULL) continue; /* Ignora líneas que solo tengan espacios o estén vacías */
+        
         orig = atol(ptr);
 
-        /* Los siguientes IDs en la MISMA línea son los DESTINOS */
+        /* Extraemos todos los IDs siguientes en la MISMA línea como DESTINOS */
         while ((ptr = strtok(NULL, " \t\n\r")) != NULL) {
             dest = atol(ptr);
+            /* Creamos la relación unidireccional entre los dos IDs */
             radio_newRelation(r, orig, dest);
         }
     }
-
-    /*
-    for (i = 0; i < relation_count; i++)
-    {
-
-        if (fscanf(fin, "%li %li", &orig, &dest) == 2)
-        {
-            radio_newRelation(r, orig,dest);
-
-        }
-        else if (fscanf(fin, "%li %li %li", &orig, &dest, &id3) == 3)
-        {
-
-
-        }
-
-
-
-    }
-
-
-        //radio_newRelation(r, orig,dest);
-
-        */
 
     return OK;
 }
