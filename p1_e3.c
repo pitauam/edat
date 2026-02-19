@@ -11,7 +11,7 @@ int main(int argc, char **argv){
     FILE *f = NULL;
 
     if(argc < 2){
-        printf("Error, needed a text file\n");
+        printf("Error, needed a text file (you entered %i arguments)\n", argc);
         return -1;
     }
 
@@ -23,24 +23,26 @@ int main(int argc, char **argv){
         return -1;
     }
 
-    if(!(f = fopen(*argv[1], "r"))){
+    if(!(f = fopen(argv[1], "r"))){
         radio_free(radio);
-        printf("Error opening file");
+        printf("Error opening file\n");
         return -1;
     }
 
     if(radio_readFromFile(f, radio)== ERROR){
         radio_free(radio);
-        printf("Error reading the file '%s'\n", *argv[1]);
+        printf("Error reading the file '%s'\n", argv[1]);
         return -1;
     }
 
      if(!(radio_print(stdout, radio))){
         radio_free(radio);
         printf("Error printing\n");
+        fclose(f);
         return -1;
     }
     
     radio_free(radio);
+    fclose(f);
     return 0;
 }
