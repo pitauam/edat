@@ -198,8 +198,7 @@ State music_getState (const Music * m){
   return m->state;
 }
 
-Status music_setId (Music * m, const long id) /*Como el id tiene que ser mayor o igual a 0, si id < 0 return error*/
-{
+Status music_setId (Music * m, const long id){
   if(m == NULL || id < 0){
     return ERROR;
   }
@@ -209,8 +208,7 @@ Status music_setId (Music * m, const long id) /*Como el id tiene que ser mayor o
   return OK;
 }
 
-Status music_setTitle (Music * m, const char * title)
-{
+Status music_setTitle (Music * m, const char * title){
   if(m == NULL || strlen(title) > STR_LENGTH){
     return ERROR;
   }
@@ -220,8 +218,7 @@ Status music_setTitle (Music * m, const char * title)
   return OK;
 }
 
-Status music_setArtist (Music * m, const char * artist)
-{
+Status music_setArtist (Music * m, const char * artist){
   if(m == NULL || strlen(artist) > STR_LENGTH){
     return ERROR;
   }
@@ -232,8 +229,7 @@ Status music_setArtist (Music * m, const char * artist)
 }
 
 
-Status music_setDuration (Music * m, const unsigned short duration)
-{
+Status music_setDuration (Music * m, const unsigned short duration){
   if(m == NULL|| duration <= 0){
     return ERROR;
   }
@@ -243,9 +239,8 @@ Status music_setDuration (Music * m, const unsigned short duration)
   return OK;
 }
   
-Status music_setState (Music * m, const State state)
-{
-  if(m == NULL){ /*falta por revisar state*/
+Status music_setState (Music * m, const State state){
+  if(m == NULL){
     return ERROR;
   }
 
@@ -254,8 +249,7 @@ Status music_setState (Music * m, const State state)
   return OK;
 }
 
-int music_cmp (const void * m1, const void * m2)
-{
+int music_cmp (const void * m1, const void * m2){
   if (m1 == NULL || m2 == NULL){
     return -1;
   }
@@ -285,8 +279,7 @@ int music_cmp (const void * m1, const void * m2)
   }
 }
 
-void * music_copy (const void * src)
-{
+void * music_copy (const void * src){
   Music *trc = NULL;
   if(src == NULL){
     return NULL;
@@ -305,8 +298,7 @@ void * music_copy (const void * src)
   return trc;
 }
 
-int music_plain_print (FILE * pf, const void * m)
-{
+int music_plain_print (FILE * pf, const void * m){
   int counter =0;
   if(pf == NULL || m == NULL){
     return -1;
