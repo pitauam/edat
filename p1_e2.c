@@ -18,12 +18,17 @@ int main(){
     char descr2[] = "id:\"222\" title:\"Every Breath You Take\" artist:\"The Police\" duration:\"253\"";
 
     radio = radio_init();
-    if(radio == NULL){return -1;}
+    if(radio == NULL)
+    {
+        printf("Error allocating memory for the radio\n");
+        return -1;
+    }
 
     cancion1 = music_initFromString(descr1);
     cancion2 = music_initFromString(descr2);
 
     if (!cancion1 || !cancion2) {
+        printf("Error allocating memory for the first song\n");
         radio_free(radio);
         return -1;
     }

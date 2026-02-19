@@ -281,7 +281,8 @@ Status radio_readFromFile(FILE *fin, Radio *r) {
     }
 
     /* 3. Leer las relaciones (una línea por cada origen hasta el final del fichero) */
-    while (fgets(line, sizeof(line), fin) != NULL) {
+    while (fgets(line, sizeof(line), fin) != NULL) 
+    {
         /* Extraemos el primer ID de la línea, que actúa como ORIGEN */
         ptr = strtok(line, " \t\n\r");
         if (ptr == NULL) continue; /* Ignora líneas que solo tengan espacios o estén vacías */
@@ -289,12 +290,12 @@ Status radio_readFromFile(FILE *fin, Radio *r) {
         orig = atol(ptr);
 
         /* Extraemos todos los IDs siguientes en la MISMA línea como DESTINOS */
-        while ((ptr = strtok(NULL, " \t\n\r")) != NULL) {
-            dest = atol(ptr);
-            /* Creamos la relación unidireccional entre los dos IDs */
+        while (fgets(line, sizeof(line), fin) != NULL) {
+            if (sscanf(line, "%ld %ld", &orig, &dest) == 2) {
             radio_newRelation(r, orig, dest);
         }
     }
+}
 
     return OK;
 }

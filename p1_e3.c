@@ -11,7 +11,7 @@ int main(int argc, char **argv){
     FILE *f = NULL;
 
     if(argc < 2){
-        printf("Error, needed a text file");
+        printf("Error, needed a text file\n");
         return -1;
     }
 
@@ -19,11 +19,11 @@ int main(int argc, char **argv){
 
     if(radio == NULL){
         radio_free(radio);
+        printf("Error allocating memory for radio\n");
         return -1;
     }
 
-
-    if(!(f = fopen(*argv, "r"))){
+    if(!(f = fopen(*argv[1], "r"))){
         radio_free(radio);
         printf("Error opening file");
         return -1;
@@ -31,13 +31,16 @@ int main(int argc, char **argv){
 
     if(radio_readFromFile(f, radio)== ERROR){
         radio_free(radio);
+        printf("Error reading the file '%s'\n", *argv[1]);
         return -1;
     }
 
      if(!(radio_print(stdout, radio))){
         radio_free(radio);
+        printf("Error printing\n");
         return -1;
     }
-
+    
+    radio_free(radio);
     return 0;
 }

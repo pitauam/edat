@@ -12,10 +12,15 @@ int main()
     Cancion2 = music_init();
 
     /*Error control*/
-    if (Cancion1 == NULL ){return -1;}
+    if (Cancion1 == NULL )
+    {
+        printf("Error allocating memory for the first song\n");
+        return -1;
+    }
 
     if (Cancion2 == NULL)
     {
+        printf("Error allocating memory for the second song\n");
         music_free(Cancion1);
         return -1;
     }
@@ -55,6 +60,7 @@ int main()
     Cancion3 = music_copy(Cancion1);
     if (Cancion3 == NULL)
     {
+        printf("Error allocating memory for the third song\n");
         music_free(Cancion1);
         music_free(Cancion2);
         return -1;
