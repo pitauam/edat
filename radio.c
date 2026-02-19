@@ -262,40 +262,29 @@ Status radio_readFromFile(FILE *fin, Radio *r) {
 
     if (fin == NULL || r == NULL) return ERROR;
 
-    /* 1. Leer el número total de canciones */
     if (fscanf(fin, "%d", &n_songs) != 1) return ERROR;
     
-    /* LIMPIEZA DEL BUFFER: fscanf deja el carácter de salto de línea '\n' en el stream.
-       Es fundamental leerlo/limpiarlo para que el siguiente fgets no lea una línea vacía. */
     fgets(line, sizeof(line), fin); 
 
-    /* 2. Leer las descripciones de música una por una */
     for (i = 0; i < n_songs; i++) {
         if (fgets(line, sizeof(line), fin) != NULL) {
-            /* IMPORTANTE: Usamos radio_newMusic. Esta función se encarga de:
-               - Crear el objeto Music con music_initFromString.
-               - Comprobar duplicados.
-               - Incrementar r->num_music (vital para que el resto del TAD funcione). */
             radio_newMusic(r, line); 
         }
     }
-
-    /* 3. Leer las relaciones (una línea por cada origen hasta el final del fichero) */
+    
     while (fgets(line, sizeof(line), fin) != NULL) 
     {
-        /* Extraemos el primer ID de la línea, que actúa como ORIGEN */
         ptr = strtok(line, " \t\n\r");
-        if (ptr == NULL) continue; /* Ignora líneas que solo tengan espacios o estén vacías */
+        if (ptr == NULL) continue; 
         
         orig = atol(ptr);
 
-        /* Extraemos todos los IDs siguientes en la MISMA línea como DESTINOS */
         while (fgets(line, sizeof(line), fin) != NULL) {
             if (sscanf(line, "%ld %ld", &orig, &dest) == 2) {
-            radio_newRelation(r, orig, dest);
+                radio_newRelation(r, orig, dest);
+            }
         }
     }
-}
 
     return OK;
 }
