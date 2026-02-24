@@ -304,7 +304,7 @@ int music_plain_print (FILE * pf, const void * m){
     return -1;
   }
 
-  counter = fprintf(pf, "id: \"%li\", title: \"%s\", artist: \"%s\", duration: \"%hd\", state: \"%d\"", music_getId(m), music_getTitle(m), music_getArtist(m), music_getDuration(m), music_getState(m));
+  counter = fprintf(pf, "[%li, %s, %s, %hd, %d]", music_getId(m), music_getTitle(m), music_getArtist(m), music_getDuration(m), music_getState(m));
 
 
   return counter;
