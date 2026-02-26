@@ -19,6 +19,7 @@
 #include "types.h"
 #include <stdio.h>
 
+#define MAX_MSC 4096
 
 /**
  * @brief Structure to implement a stack. To be defined in stack_fp.c
