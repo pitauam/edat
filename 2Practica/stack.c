@@ -46,7 +46,7 @@ void stack_free (Stack *s)
     int i;
     if (!s) {return;}
 
-    for (i = 0; i < s->s_size; i++)
+    for (i = 0; s->songs[i] !=NULL; i++)
     {
         music_free(s->songs[i]);
     }
