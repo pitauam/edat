@@ -24,10 +24,12 @@ Stack * stack_init ()
 {
     Stack * stack = NULL;
     int i;
-    stack->s_size = 0;
+    
 
     stack = (Stack*)calloc(1, sizeof(Stack));
     if (!stack) {return NULL;}
+
+    stack->s_size = 0;
 
     for (i = 0; i < MAX_MSC; i++)
     {
@@ -57,7 +59,7 @@ Status stack_push (Stack *s, const void *ele)
     if (!s || !ele) {return ERROR;} /*if stack is null or if element is null returns error*/
     if (stack_size(s) == MAX_MSC) {return ERROR;} /*if stack is full it cannot add more songs*/
 
-    s->songs[s->s_size] = ele; /*inserts the element in the stack*/
+    s->songs[s->s_size] = (Music*)ele; /*inserts the element in the stack*/
     s->s_size++;
     return OK;
 }
@@ -65,7 +67,7 @@ Status stack_push (Stack *s, const void *ele)
 
 void * stack_pop (Stack *s)
 {
-    if (!s) {return;} 
+    if (!s) {return NULL;} 
     if (stack_isEmpty(s) == TRUE) {return NULL;}
 
     s->s_size--; /*decreases stack size*/
@@ -109,6 +111,7 @@ int stack_print(FILE* fp, const Stack *s,  P_stack_ele_print f)
     for (i = 0; i < s->s_size; i++)
     {
         temp = music_plain_print(fp, s->songs[i]);
+        printf("\n");
         if (temp == -1) {return -1;}
         ch_printed+=temp;
     }

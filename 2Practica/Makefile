@@ -1,8 +1,8 @@
 ########################################################
 CC=gcc
 CFLAGS= -g -Wall -pedantic
-EJS = p2_e2
-EJS = p2_e1 p2_e2 p2_e3
+EJS = p2_e1
+#EJS = p2_e1 p2_e2 p2_e3
 ########################################################
 OBJECTSP2E1 = p2_e1.o stack.o radio.o music.o
 OBJECTSP2E2 = p2_e2.o radio.o music.o
@@ -50,7 +50,7 @@ clean:
 
 run:
 	@echo ">>>>>>Running p2_e1"
-	./p2_e1
+	./p2_e1 radio.txt
 #	@echo ">>>>>>Running p2_e2"
 #	./p2_e2 
 #	@echo ">>>>>>Running p2_e3"
@@ -58,7 +58,7 @@ run:
 
 runv:
 	@echo ">>>>>>Running p2_e1 with valgrind"
-	valgrind --leak-check=full --show-leak-kinds=all ./p2_e1
+	valgrind --leak-check=full --show-leak-kinds=all ./p2_e1 radio.txt
 #	@echo ">>>>>>Running p2_e2 with valgrind"
 #	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p2_e2 
 #	@echo ">>>>>>Running p2_e3 with valgrind"
