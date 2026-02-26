@@ -83,10 +83,10 @@ int main (int argc, char **argv) {
     while(option != 2 ){
         if(option){
             stack_pop(history);
-            show_player_menu(history);
+            option = show_player_menu(history);
         }else {
             fprintf(stdout, "Error, please select one of the options\n");
-            show_player_menu(history);
+            option = show_player_menu(history);
         }
     }
 
