@@ -187,4 +187,15 @@ int radio_print (FILE *pf, const Radio *r);
  */
 Status radio_readFromFile (FILE *fin, Radio *r);
 
+/**
+ * @brief Gets the music from a Radio
+ *
+ * @param r Pointer to the radio.
+ * @param i position of the music in the radio
+ *
+ * @return A music or NULL if something went wrong
+ **/
+Music *radio_getMusic(Radio *r, int i);
+
+int radio_getnumber(Radio *r);
 #endif /* radio_H */

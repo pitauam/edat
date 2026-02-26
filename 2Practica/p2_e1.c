@@ -2,6 +2,10 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "stack.h"
+#include "music.h"
+#include "radio.h"
+
 int show_player_menu(Stack *history);
 int show_player_menu(Stack *history) {
     int option;
@@ -31,7 +35,65 @@ int show_player_menu(Stack *history) {
 
 /* TODO MAIN FUNCTION */
 int main (int argc, char **argv) {
+    FILE *f= NULL;
+    Radio *radio = NULL;
+    Stack *history = NULL;
 
+    int n_music = 0;
+    int i;
+    int option;
+
+    if(!(f= fopen(argv[1], "r"))){
+        return 1;
+    }
+    radio = radio_init();
+
+    if(radio == NULL){
+        fclose(f);
+        return 1;
+    }
+
+    if(radio_readFromFile(f, radio) == ERROR){
+        fclose(f);
+        radio_free(radio);
+        return 1;
+    }
+
+    history = stack_init();
+
+    if(history == NULL){
+        fclose(f);
+        radio_free(radio);
+        return 1;
+    }
+
+    n_music = radio_getNumberOfMusic(radio);
+
+    for(i= 0; i< n_music; i++){
+        if(stack_push(history,radio_getMusic(radio, i)) == ERROR){
+            radio_free(radio);
+            stack_free(history);
+            fclose(f);
+            return -1;
+        }
+    }
+
+    option = show_player_menu(history);
+
+    while(option != 2 ){
+        if(option){
+            stack_pop(history);
+            show_player_menu(history);
+        }else {
+            fprintf(stdout, "Error, please select one of the options\n");
+            show_player_menu(history);
+        }
+    }
+
+    radio_free(radio);
+    stack_free(history);
+    fclose(f);
+    return 0;
 }
 
 

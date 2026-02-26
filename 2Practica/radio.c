@@ -288,3 +288,20 @@ Status radio_readFromFile(FILE *fin, Radio *r) {
 
     return OK;
 }
+
+Music *radio_getMusic(Radio *r, int i){
+
+    if(r == NULL || i > radio_getnumber(r) || !(radio_getnumber(r))){
+        return NULL;
+    }
+
+    return r->songs[i];
+}
+
+int radio_getnumber(Radio *r){
+    if(r == NULL){
+        return -1;
+    }
+
+    return r->num_music;
+}
