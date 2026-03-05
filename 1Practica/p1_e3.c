@@ -28,11 +28,14 @@ int main(int argc, char **argv){
         return -1;
     }
 
+    /*poner radio recomm:*/
     if(radio_readFromFile(f, radio)== ERROR){
         radio_free(radio);
         printf("Error reading the file '%s'\n", argv[1]);
         return -1;
     }
+    
+    printf("Radio recommendations:\n");
 
      if(!(radio_print(stdout, radio))){
         radio_free(radio);

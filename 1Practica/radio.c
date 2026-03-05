@@ -76,6 +76,11 @@ Status radio_newRelation(Radio *r, long orig, long dest){
         return ERROR;
     }
 
+    if (radio_relationExists(r, orig, dest) == TRUE)
+    {
+        return ERROR;
+    }
+
     /*stores in p1 and p2 the position of the origin and destination songs respectively*/
     for (i = 0; i < r->num_music;i++)
     {
@@ -257,7 +262,6 @@ int radio_print (FILE *pf, const Radio *r){
 Status radio_readFromFile(FILE *fin, Radio *r) {
     int i, n_songs;
     char line[1024];
-    char *ptr;
     long orig, dest;
 
     if (fin == NULL || r == NULL) return ERROR;
@@ -272,19 +276,10 @@ Status radio_readFromFile(FILE *fin, Radio *r) {
         }
     }
     
-    while (fgets(line, sizeof(line), fin) != NULL) 
+    while (fscanf(fin, "%ld %ld", &orig, &dest) == 2 ) 
     {
-        ptr = strtok(line, " \t\n\r");
-        if (ptr == NULL) continue; 
-        
-        orig = atol(ptr);
-
-        while (fgets(line, sizeof(line), fin) != NULL) {
-            if (sscanf(line, "%ld %ld", &orig, &dest) == 2) {
-                radio_newRelation(r, orig, dest);
-            }
-        }
+        radio_newRelation(r, orig, dest);
     }
-
+    
     return OK;
 }
