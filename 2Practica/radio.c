@@ -76,6 +76,11 @@ Status radio_newRelation(Radio *r, long orig, long dest){
         return ERROR;
     }
 
+    if (radio_relationExists(r, orig, dest) == TRUE)
+    {
+        return ERROR;
+    }
+    
     /*stores in p1 and p2 the position of the origin and destination songs respectively*/
     for (i = 0; i < r->num_music;i++)
     {
@@ -195,6 +200,8 @@ long *radio_getRelationsFromId(const Radio *r, long id){
 
     n = radio_getNumberOfRelationsFromId(r, id);
     if (n == -1) {return NULL;}
+
+    
 
     array = (long *)calloc(n, sizeof(long));
     if (!array){return NULL;}
