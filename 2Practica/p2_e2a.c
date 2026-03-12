@@ -88,7 +88,7 @@ int main(int argc, char **argv) {
     n_music1 = radio_getNumberOfMusic(radio1);
     n_music2 = radio_getNumberOfMusic(radio2);
 
-    for(i=n_music1-1; i > 0; i--){
+    for(i=0; i < n_music1; i++){
         if(stack_push(Playlist1, radio_getMusic(radio1, i)) == ERROR){
             radio_free(radio1);
             radio_free(radio2);
@@ -99,7 +99,7 @@ int main(int argc, char **argv) {
         }
     }
 
-    for(i= n_music2-1; i > 0; i--){
+    for(i= 0; i < n_music2; i++){
         if(stack_push(Playlist2, radio_getMusic(radio2, i)) == ERROR){
             radio_free(radio1);
             radio_free(radio2);
@@ -109,8 +109,9 @@ int main(int argc, char **argv) {
             return -1;
         }
     }
+    
     fprintf(stdout, "\n");
-    fprintf(stdout, "%s", argv[1]);
+    fprintf(stdout, "Playlist1");
     fprintf(stdout, "\n");
     fprintf(stdout, "SIZE: %d", n_music1);
     fprintf(stdout, "\n");
