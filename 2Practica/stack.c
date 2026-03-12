@@ -159,7 +159,7 @@ Status mergeStacks2b (Stack *sin1, Stack *sin2, Stack *sout, P_stack_comp_art co
 void *e;        /*pointer to an element in the stack*/
     Stack *ps;      /*pointer to a stack*/
 
-    if (!sin1 || !sin2 || !sout || sin1->s_size < 1 || sin2->s_size < 1 || !sin1->elements[0] || !sin2->elements[0]) {return ERROR;}
+    if (!sin1 || !sin2 || !sout || sin1->s_size < 1 || sin2->s_size < 1 || !sin1->elements[0] || !sin2->elements[0] || !compare) {return ERROR;}
 
     /*if the stack is not empty then the function won't work because it will concatenate instead of merging*/
     if (stack_size(sout) != 0) {return ERROR;}
