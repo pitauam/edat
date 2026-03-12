@@ -125,7 +125,7 @@ int main(int argc, char **argv) {
     fprintf(stdout, "\n");
     stack_print(stdout, Playlist2, music_plain_print);
 
-    if(mergeStacks(Playlist2, Playlist1, MergedPlay) == ERROR){
+    if(mergeStacks2a(Playlist2, Playlist1, MergedPlay) == ERROR){
         printf("Error merging the playlist");
         radio_free(radio1);
         radio_free(radio2);

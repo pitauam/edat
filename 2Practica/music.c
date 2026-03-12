@@ -66,6 +66,7 @@ Music * music_init (){
   m->artist[0] = '\0';
   m->duration = 0;
   m->state = NOT_LISTENED;
+  m->index = 0;
 
   return m;
 }
@@ -301,6 +302,7 @@ int music_cmp (const void * m1, const void * m2){
     return 1;
   }
 }
+
 Status music_cmp_artist(const void *m1, const void *m2, int *res){
 int i=0;
 
@@ -320,16 +322,16 @@ if (m1 == NULL || m2 == NULL){
 
 do{
   if(n1[i] > n2[i]){
-    res = 1;
+    *res = 1;
     return OK;
   }
   if(n1[i] < n2[i]){
-    res = -1;
+    *res = -1;
     return OK;
   }
   }while(n1[i] == n2[i]);
 
-  res = 0;
+  *res = 0;
   return OK;
   
 }
@@ -361,6 +363,16 @@ int music_plain_print (FILE * pf, const void * m){
 
   counter = fprintf(pf, "[%li, %s, %s, %hd, %d]", music_getId(m), music_getTitle(m), music_getArtist(m), music_getDuration(m), music_getState(m));
 
+  return counter;
+}
+
+int music_plain_print_p2_e3 (FILE * pf, const void * m){
+  int counter =0;
+  if(pf == NULL || m == NULL){
+    return -1;
+  }
+
+  counter = fprintf(pf, "[%li, %s, %s, %hd, %d, %i]", music_getId(m), music_getTitle(m), music_getArtist(m), music_getDuration(m), music_getState(m), music_getIndex((Music*)m));
 
   return counter;
 }
