@@ -54,11 +54,10 @@ Status radio_newMusic(Radio *r, char *desc){
 
     if (radio_contains(r, music_getId(music)) == TRUE){
         music_free(music);
-        music = NULL;
         return OK;
     }
 
-    music_setIndex(r->songs[r->num_music],r->num_music);
+    music_setIndex(music,r->num_music);
     
     r->songs[r->num_music] = music;
     r->num_music++;
@@ -268,7 +267,6 @@ int radio_print (FILE *pf, const Radio *r){
 Status radio_readFromFile(FILE *fin, Radio *r) {
     int i, n_songs;
     char line[1024];
-    char *ptr;
     long orig, dest;
 
     if (fin == NULL || r == NULL) return ERROR;
@@ -283,18 +281,9 @@ Status radio_readFromFile(FILE *fin, Radio *r) {
         }
     }
     
-    while (fgets(line, sizeof(line), fin) != NULL) 
+    while (fscanf(fin, "%ld %ld", &orig, &dest) == 2 ) 
     {
-        ptr = strtok(line, " \t\n\r");
-        if (ptr == NULL) continue; 
-        
-        orig = atol(ptr);
-
-        while (fgets(line, sizeof(line), fin) != NULL) {
-            if (sscanf(line, "%ld %ld", &orig, &dest) == 2) {
-                radio_newRelation(r, orig, dest);
-            }
-        }
+        radio_newRelation(r, orig, dest);
     }
 
     return OK;
@@ -316,28 +305,29 @@ int radio_getnumber(Radio *r){
 
     return r->num_music;
 }
-
 Status radio_depthSearch (Radio *r, long from_id, long to_id)
 {
-    if (!r || r->num_music < 0 || r->num_relations < 0 || from_id < 0 || to_id < 0) { return ERROR;}
+    if (!r || r->num_music < 0 || r->num_relations < 0 || from_id < 0 || to_id < 0) return ERROR;
 
     Music *from_m = NULL;
     Music *to_m = NULL;
-    int i;
-    Status st;
+    int i, p_orig = -1;
+    Status st = OK;
     Stack *s = NULL;
 
-    from_m = radio_getMusic(r, from_id);
-    to_m = radio_getMusic(r, to_id);
+    for (i = 0; i < radio_getNumberOfMusic(r); i++) {
+        if (music_getId(r->songs[i]) == from_id) from_m = r->songs[i];
+        if (music_getId(r->songs[i]) == to_id) to_m = r->songs[i];
+    }
 
-    for (i = 0; i < radio_getNumberOfMusic(r); i++)
-    {
+    if (!from_m || !to_m) return ERROR;
+
+    for (i = 0; i < radio_getNumberOfMusic(r); i++) {
         music_setState(r->songs[i], NOT_LISTENED);
     }
-    st = OK;
 
     s = stack_init();
-    if (!s) {return ERROR;}
+    if (!s) return ERROR;
 
     music_setState(from_m, LISTENED);
     stack_push(s, from_m);
@@ -345,22 +335,25 @@ Status radio_depthSearch (Radio *r, long from_id, long to_id)
     while (stack_isEmpty(s) == FALSE && st == OK){
 
         from_m = stack_pop(s);
-        if (music_cmp(from_m, to_m) == 0)
-        {
+        
+        music_plain_print_p2_e3(stdout, from_m);
+        fprintf(stdout, "\n");
+
+        if (music_cmp(from_m, to_m) == 0) {
             st = ERROR;
-        }
-        else
-        {
-            for (i = 0; i < radio_getNumberOfRelationsFromId(r, from_id); i++)
-            {
-                if (music_getState(r->songs[i]) == NOT_LISTENED)
-                {
-                    music_setState(r->songs[i], LISTENED);
-                    stack_push(s, r->songs[i]);
+        } else {
+            p_orig = music_getIndex(from_m);
+            for (i = 0; i < radio_getNumberOfMusic(r); i++) {
+                if (r->relations[p_orig][i] == TRUE) {
+                    if (music_getState(r->songs[i]) == NOT_LISTENED) {
+                        music_setState(r->songs[i], LISTENED);
+                        stack_push(s, r->songs[i]);
+                    }
                 }
             }
         }
-    };
+    }
+    
     stack_free(s);
-    return st;
+    return OK;
 }

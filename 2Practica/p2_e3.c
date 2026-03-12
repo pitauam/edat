@@ -5,34 +5,45 @@
 #include "music.h"
 #include "stack.h"
 
-int main(int argc, char **arga, long *argb){
+int main(int argc, char **argv){
     Radio *radio = NULL;
-    int i =0;
+    FILE *f = NULL;
+    long from_id, to_id;
+
+    if(argc < 4){
+        return -1;
+    }
 
     radio = radio_init();
-
     if(radio == NULL){
         return -1;
     }
 
-    if(radio_readFromFile(arga[1], radio) == ERROR){
+    if(!(f = fopen(argv[1], "r"))){
         radio_free(radio);
+        return -1;
     }
-    fprintf(stdout, "Radio: ");
-    printf("\n");
 
+    if(radio_readFromFile(f, radio) == ERROR){
+        radio_free(radio);
+        fclose(f);
+        return -1;
+    }
+    fclose(f); 
+
+    from_id = atol(argv[2]);
+    to_id = atol(argv[3]);
+
+    fprintf(stdout, "Radio:\n");
     radio_print(stdout, radio);
 
-    printf("\n");
-    fprintf(stdout, "From Music with id: %ld\n", argb[1]);
-    fprintf(stdout, "To Music with id: %ld\n", argb[2]);
+    /* Textos exactos del PDF */
+    fprintf(stdout, "\nFrom music with id: %ld\n", from_id);
+    fprintf(stdout, "To music with id: %ld\n", to_id);
+    fprintf(stdout, "Music exploration path:\n");
     
-    fprintf(stdout, "Music exportation path: \n");
-    radio_depthSearch(radio, argb[1], argb[2]);
+    radio_depthSearch(radio, from_id, to_id);
 
-    for(i=0; i< radio_getNumberOfMusic(radio); i++){
-        if(music_getIndex)
-    }
-    
-
+    radio_free(radio);
+    return 0;
 }
