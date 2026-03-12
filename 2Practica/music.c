@@ -202,6 +202,14 @@ State music_getState (const Music * m){
   return m->state;
 }
 
+int music_getIndex(Music *m){
+  if(m== NULL){
+    return -1;
+  }
+
+  return m->index;
+}
+
 Status music_setId (Music * m, const long id){
   if(m == NULL || id < 0){
     return ERROR;
@@ -252,6 +260,17 @@ Status music_setState (Music * m, const State state){
 
   return OK;
 }
+
+Status music_setIndex(Music *m, int index){
+  if(m == NULL){
+    return ERROR;
+  }
+
+  m->index = index;
+
+  return OK;
+}
+
 
 int music_cmp (const void * m1, const void * m2){
   if (m1 == NULL || m2 == NULL){

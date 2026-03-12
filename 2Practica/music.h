@@ -139,6 +139,16 @@ unsigned short music_getDuration (const Music * m);
  */
 State music_getState (const Music * m);
 
+/**
+ * @brief Gets the index of a given Music.
+ *
+ * @param Music pointer
+ *
+ * @return Returns the index of a given Music, or -1 in 
+ * case of error.
+ */
+int music_getIndex(Music *m);
+
 
 /**
  * @brief Modifies the id of a given Music.
@@ -194,7 +204,15 @@ Status music_setDuration (Music * m, const unsigned short duration);
  */
 Status music_setState (Music * m, const State state);
 
-
+/**
+ * @brief Modifies the index of a given Music
+ *
+ * @param m Music pointer
+ * @param index New index
+ *
+ * @return Returns OK or ERROR in case of error.
+ */
+Status music_setIndex(Music *m, int index);
 
 /**
  * @brief Compares two music.
