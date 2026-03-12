@@ -58,7 +58,7 @@ run:
 
 runv:
 	@echo ">>>>>>Running p2_e1 with valgrind"
-	valgrind --leak-check=full --show-leak-kinds=all ./p2_e1 radio.txt
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p2_e1 radio.txt
 #	@echo ">>>>>>Running p2_e2 with valgrind"
 #	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p2_e2 
 #	@echo ">>>>>>Running p2_e3 with valgrind"

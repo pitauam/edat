@@ -23,19 +23,11 @@ typedef int (*P_stack_ele_print)(FILE *, const void*);
 Stack * stack_init ()
 {
     Stack * stack = NULL;
-    int i;
-    
 
     stack = (Stack*)calloc(1, sizeof(Stack));
     if (!stack) {return NULL;}
 
     stack->s_size = 0;
-
-    for (i = 0; i < MAX_MSC; i++)
-    {
-        stack->songs[i] = music_init();
-        if (!stack->songs[i]) {return NULL;}
-    }
 
     return stack;
 }
@@ -43,13 +35,10 @@ Stack * stack_init ()
 
 void stack_free (Stack *s)
 {
-    int i;
     if (!s) {return;}
 
-    for (i = 0; s->songs[i] !=NULL; i++)
-    {
-        music_free(s->songs[i]);
-    }
+    free(s);
+
     return;
 }
 
