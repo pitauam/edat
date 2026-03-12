@@ -302,7 +302,7 @@ int music_cmp (const void * m1, const void * m2){
     return 1;
   }
 }
-/*
+
 Status music_cmp_artist(const void *m1, const void *m2, int *res){
 int i=0;
 
@@ -316,7 +316,7 @@ if (m1 == NULL || m2 == NULL){
   strcpy(n1, music_getArtist(m1));
   strcpy(n2, music_getArtist(m2));
   if(strcmp(n1, n2) == 0){
-    return 0;
+    return ERROR;
   }
 
 
@@ -335,19 +335,6 @@ do{
   *res = 0;
   return OK;
   
-}*/
-
-Status music_cmp_artist(const void *m1, const void *m2, int *res) {
-    /* Comprobamos que no nos llegue nada nulo */
-    if (m1 == NULL || m2 == NULL || res == NULL){
-        return ERROR;
-    }
-    
-    /* Usamos strcmp, que ya compara letra por letra y devuelve negativo o positivo,
-     * y guardamos directamente su resultado dentro de nuestro puntero *res */
-    *res = strcmp(music_getArtist(m1), music_getArtist(m2));
-
-    return OK;
 }
 
 void * music_copy (const void * src){

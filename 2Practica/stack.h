@@ -37,7 +37,7 @@ typedef int (*P_stack_ele_print)(FILE *, const void*);
 /**
  * @brief Typedef for a function pointer to merge a stack element by alphabetic order
  **/
-typedef int (*P_stack_comp_art)(const void*, const void*, int *);
+typedef Status (*P_stack_comp_art)(const void*, const void*, int *);
 
 /**
  * @brief This function initializes an empty stack.
@@ -131,4 +131,3 @@ Status mergeStacks2b (Stack *sin1, Stack *sin2, Stack *sout, P_stack_comp_art co
 
 
 #endif	/* STACK_H */
-

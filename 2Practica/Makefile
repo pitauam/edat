@@ -11,7 +11,7 @@ EXECUTABLES = p2_e1 p2_e2 p2_e2a p2_e2b p2_e3
 OBJECTSP2E1 = p2_e1.o stack.o radio.o music.o
 OBJECTSP2E2 = p2_e2.o radio.o music.o
 OBJECTSP2E2a = p2_e2a.o radio.o music.o stack.o
-OBJECTSP2E2b = p2_e2a.o radio.o music.o stack.o
+OBJECTSP2E2b = p2_e2b.o radio.o music.o stack.o
 OBJECTSP2E3 = p2_e3.o radio.o music.o stack.o
 ########################################################
 
