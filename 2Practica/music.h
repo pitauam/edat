@@ -212,7 +212,16 @@ Status music_setState (Music * m, const State state);
  */
 int music_cmp (const void * m1, const void * m2);
 
-
+/**
+ * @brief Compares two music artist.
+ *
+ *
+ * 
+ * @param m1,m2 Music to compare.
+ *
+ * @return returns -1 if 
+ */
+Status music_cmp_artist(const void *m1, const void *m2, int *res);
 /**
  * @brief Reserves memory for a Music where it copies the data from
  * the Music src.

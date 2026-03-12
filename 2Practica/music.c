@@ -25,6 +25,7 @@ struct _Music
   char artist[STR_LENGTH];
   unsigned short duration;
   State state;
+  int index;
 };
 
 
@@ -280,6 +281,38 @@ int music_cmp (const void * m1, const void * m2){
   } else{
     return 1;
   }
+}
+Status music_cmp_artist(const void *m1, const void *m2, int *res){
+int i=0;
+
+if (m1 == NULL || m2 == NULL){
+    return ERROR;
+  }
+  char n1[STR_LENGTH];
+  char n2[STR_LENGTH];
+
+  
+  strcpy(n1, music_getArtist(m1));
+  strcpy(n2, music_getArtist(m2));
+  if(strcmp(n1, n2) == 0){
+    return 0;
+  }
+
+
+do{
+  if(n1[i] > n2[i]){
+    res = 1;
+    return OK;
+  }
+  if(n1[i] < n2[i]){
+    res = -1;
+    return OK;
+  }
+  }while(n1[i] == n2[i]);
+
+  res = 0;
+  return OK;
+  
 }
 
 void * music_copy (const void * src){

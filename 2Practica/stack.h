@@ -34,6 +34,10 @@ typedef struct _Stack Stack;
  **/
 typedef int (*P_stack_ele_print)(FILE *, const void*);
 
+/**
+ * @brief Typedef for a function pointer to merge a stack element by alphabetic order
+ **/
+typedef int (*P_stack_comp_art)(const void*, const void*);
 
 /**
  * @brief This function initializes an empty stack.
@@ -112,7 +116,18 @@ int stack_print(FILE* fp, const Stack *s,  P_stack_ele_print f);
 * @param sout, result stack
 * @return The function returns OK or ERROR
 **/
-Status mergeStacks (Stack *sin1, Stack *sin2, Stack *sout);
+Status mergeStacks2a (Stack *sin1, Stack *sin2, Stack *sout);
+
+/**
+* @brief: Merges two stacks
+*
+* @param sin1, first input stack
+* @param sin2, second input stack
+* @param sout, result stack
+* @param comare function to compare
+* @return The function returns OK or ERROR
+**/
+Status mergeStacks2b (Stack *sin1, Stack *sin2, Stack *sout, P_stack_comp_art compare );
 
 
 #endif	/* STACK_H */
