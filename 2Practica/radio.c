@@ -342,7 +342,7 @@ Status radio_depthSearch (Radio *r, long from_id, long to_id)
     music_setState(from_m, LISTENED);
     stack_push(s, from_m);
 
-    do{
+    while (stack_isEmpty(s) == FALSE && st == OK){
 
         from_m = stack_pop(s);
         if (music_cmp(from_m, to_m) == 0)
@@ -360,6 +360,7 @@ Status radio_depthSearch (Radio *r, long from_id, long to_id)
                 }
             }
         }
-    }while (stack_isEmpty(s) == FALSE && st == OK);
+    };
+    stack_free(s);
     return st;
 }
