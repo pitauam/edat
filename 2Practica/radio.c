@@ -327,13 +327,39 @@ Status radio_depthSearch (Radio *r, long from_id, long to_id)
     Status st;
     Stack *s = NULL;
 
+    from_m = radio_getMusic(r, from_id);
+    to_m = radio_getMusic(r, to_id);
+
     for (i = 0; i < radio_getNumberOfMusic(r); i++)
     {
         music_setState(r->songs[i], NOT_LISTENED);
     }
     st = OK;
 
-    s = stack_init
+    s = stack_init();
+    if (!s) {return ERROR;}
 
+    music_setState(from_m, LISTENED);
+    stack_push(s, from_m);
+
+    do{
+
+        from_m = stack_pop(s);
+        if (music_cmp(from_m, to_m) == 0)
+        {
+            st = ERROR;
+        }
+        else
+        {
+            for (i = 0; i < radio_getNumberOfRelationsFromId(r, from_id); i++)
+            {
+                if (music_getState(r->songs[i]) == NOT_LISTENED)
+                {
+                    music_setState(r->songs[i], LISTENED);
+                    stack_push(s, r->songs[i]);
+                }
+            }
+        }
+    }while (stack_isEmpty(s) == FALSE && st == OK);
     return st;
 }
