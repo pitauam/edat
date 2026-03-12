@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "stack.h"
 
 #define STR_LENGTH 64
 
@@ -314,4 +315,25 @@ int radio_getnumber(Radio *r){
     }
 
     return r->num_music;
+}
+
+Status radio_depthSearch (Radio *r, long from_id, long to_id)
+{
+    if (!r || r->num_music < 0 || r->num_relations < 0 || from_id < 0 || to_id < 0) { return ERROR;}
+
+    Music *from_m = NULL;
+    Music *to_m = NULL;
+    int i;
+    Status st;
+    Stack *s = NULL;
+
+    for (i = 0; i < radio_getNumberOfMusic(r); i++)
+    {
+        music_setState(r->songs[i], NOT_LISTENED);
+    }
+    st = OK;
+
+    s = stack_init
+
+    return st;
 }

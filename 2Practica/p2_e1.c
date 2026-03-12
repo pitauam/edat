@@ -98,5 +98,3 @@ int main (int argc, char **argv) {
     stack_free(history);
     return 0;
 }
-
-

@@ -197,5 +197,25 @@ Status radio_readFromFile (FILE *fin, Radio *r);
  **/
 Music *radio_getMusic(Radio *r, int i);
 
+/**
+ * @brief Gets the number of songs in a radio
+ *
+ * @param r Pointer to the radio.
+ *
+ * @return number of songs in a radio or -1 if something went wrong
+ **/
 int radio_getnumber(Radio *r);
+
+/**
+* @brief: Makes a search from the origin music to the final music of a radio using the
+* depth-first search algorithm through an ADT Stack
+*
+* The function prints each visited music while traversing the radio
+*
+* @param r, Pointer to radio
+* @param from_id, id of the origin Music
+* @param to_id, id of the destination Music
+* @return The function returns OK or ERROR
+**/
+Status radio_depthSearch (Radio *r, long from_id, long to_id);
 #endif /* radio_H */

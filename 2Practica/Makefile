@@ -48,7 +48,7 @@ file_utils.o: file_utils.c file_utils.h types.h
 music.o: music.c music.h types.h
 	$(CC) $(CFLAGS) -c music.c
 
-radio.o: radio.c radio.h music.h
+radio.o: radio.c radio.h music.h stack.h
 	$(CC) $(CFLAGS) -c radio.c
 
 stack.o: stack.c music.h types.h stack.h
@@ -71,7 +71,7 @@ run:
 #	./p2_e2a playlist1.txt playlist2.txt
 
 #	@echo ">>>>>>Running p2_e3"
-#	./p2_e3 radio1.txt
+#	./p2_e3 radio_dfs.txt 1 9
 
 runv:
 	@echo ">>>>>>Running p2_e1 with valgrind"
@@ -84,6 +84,6 @@ runv:
 #	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p2_e2a playlist1.txt playlist2.txt
 
 #	@echo ">>>>>>Running p2_e3 with valgrind"
-#	valgrind --leak-check=full --show-leak-kinds=all ./p2_e3 radio1.txt
+#	valgrind --leak-check=full --show-leak-kinds=all ./p2_e3 radio_dfs.txt 1 9
 
 	
