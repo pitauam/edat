@@ -1,16 +1,17 @@
 ########################################################
 CC=gcc
 CFLAGS= -g -Wall -pedantic
-#EJS = p2_e1
-EJS = p2_e2a
+EJS = p2_e1
+#EJS = p2_e2a
 #EJS = p2_e2b
 #EJS = p2_e1 p2_e2 p2_e2a p2_e2b p2_e3
+EXECUTABLES = p2_e1 p2_e2 p2_e2a p2_e2b p2_e3
 ########################################################
 OBJECTSP2E1 = p2_e1.o stack.o radio.o music.o
 OBJECTSP2E2 = p2_e2.o radio.o music.o
 OBJECTSP2E2a = p2_e2a.o radio.o music.o stack.o
-OBJECTSP2E2b = p2_e2a.o radio.o music.o
-OBJECTSP2E3 = p2_e3.o radio.o music.o
+OBJECTSP2E2b = p2_e2a.o radio.o music.o stack.o
+OBJECTSP2E3 = p2_e3.o radio.o music.o stack.o
 ########################################################
 
 all: $(EJS) clear
@@ -57,25 +58,31 @@ clear:
 	rm -rf *.o 
 
 clean:
-	rm -rf *.o $(EJS)
+	rm -rf *.o $(EXECUTABLES)
 
 run:
-#	@echo ">>>>>>Running p2_e1"
-#	./p2_e1 radio.txt
+	@echo ">>>>>>Running p2_e1"
+	./p2_e1 radio.txt
+
 #	@echo ">>>>>>Running p2_e2"
 #	./p2_e2 
-	@echo ">>>>>>Running p2_e2a"
-	./p2_e2a playlist1.txt playlist2.txt
+
+#	@echo ">>>>>>Running p2_e2a"
+#	./p2_e2a playlist1.txt playlist2.txt
+
 #	@echo ">>>>>>Running p2_e3"
 #	./p2_e3 radio1.txt
 
 runv:
-#	@echo ">>>>>>Running p2_e1 with valgrind"
-#	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p2_e1 radio.txt
+	@echo ">>>>>>Running p2_e1 with valgrind"
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p2_e1 radio.txt
+
 #	@echo ">>>>>>Running p2_e2 with valgrind"
 #	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p2_e2 
-	@echo ">>>>>>Running p2_e2a with valgrind"
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p2_e2a playlist1.txt playlist2.txt
+
+#	@echo ">>>>>>Running p2_e2a with valgrind"
+#	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p2_e2a playlist1.txt playlist2.txt
+
 #	@echo ">>>>>>Running p2_e3 with valgrind"
 #	valgrind --leak-check=full --show-leak-kinds=all ./p2_e3 radio1.txt
 

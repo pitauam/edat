@@ -22,6 +22,7 @@ int show_player_menu(Stack *history) {
 	
 	/* Imprimimos historial (pila) */
 	printf("\nRecently Played:\n");
+	printf("SIZE: %li\n", stack_size(history));
 	stack_print(stdout, history, music_plain_print);
 	
 	/* Mostramos menu y esperamos selección */
@@ -94,6 +95,7 @@ int main (int argc, char **argv) {
 
     radio_free(radio);
     fclose(f);
+    stack_free(history);
     return 0;
 }
 

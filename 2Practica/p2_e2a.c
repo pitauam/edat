@@ -88,7 +88,7 @@ int main(int argc, char **argv) {
     n_music1 = radio_getNumberOfMusic(radio1);
     n_music2 = radio_getNumberOfMusic(radio2);
 
-    for(i=0; i < n_music1; i++){
+    for(i=n_music1-1; i >= 0; i--){
         if(stack_push(Playlist1, radio_getMusic(radio1, i)) == ERROR){
             radio_free(radio1);
             radio_free(radio2);
@@ -99,7 +99,7 @@ int main(int argc, char **argv) {
         }
     }
 
-    for(i= 0; i < n_music2; i++){
+    for(i=n_music2-1; i >= 0; i--){
         if(stack_push(Playlist2, radio_getMusic(radio2, i)) == ERROR){
             radio_free(radio1);
             radio_free(radio2);
@@ -111,20 +111,21 @@ int main(int argc, char **argv) {
     }
     
     fprintf(stdout, "\n");
-    fprintf(stdout, "Playlist1");
+    fprintf(stdout, "Playlist 0:");
     fprintf(stdout, "\n");
     fprintf(stdout, "SIZE: %d", n_music1);
     fprintf(stdout, "\n");
     stack_print(stdout, Playlist1, music_plain_print);
 
     fprintf(stdout, "\n");
-    fprintf(stdout, "%s", argv[2]);
+    
+    fprintf(stdout, "Playlist 1:");
     fprintf(stdout, "\n");
     fprintf(stdout, "SIZE: %d", n_music2);
     fprintf(stdout, "\n");
     stack_print(stdout, Playlist2, music_plain_print);
 
-    if(mergeStacks(Playlist1, Playlist2, MergedPlay) == ERROR){
+    if(mergeStacks(Playlist2, Playlist1, MergedPlay) == ERROR){
         printf("Error merging the playlist");
         radio_free(radio1);
         radio_free(radio2);
