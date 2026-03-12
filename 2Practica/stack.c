@@ -61,7 +61,7 @@ void * stack_pop (Stack *s)
     if (stack_isEmpty(s) == TRUE) {return NULL;}
 
     s->s_size--; /*decreases stack size*/
-    return s->elements[s->s_size+1]; /*returns top element of the stack*/
+    return s->elements[s->s_size]; /*returns top element of the stack*/
 }
 
 
@@ -70,7 +70,7 @@ void * stack_top (const Stack *s)
     if (!s) {return NULL;}
     if (stack_isEmpty(s) == TRUE) {return NULL;}
 
-    return s->elements[s->s_size];
+    return s->elements[s->s_size-1];
 }
 
 
@@ -122,7 +122,7 @@ Status mergeStacks2a (Stack *sin1, Stack *sin2, Stack *sout)
     while (stack_isEmpty(sin1) == FALSE && stack_isEmpty(sin2) == FALSE)
     {
 
-        if (music_getDuration(stack_top(sin1)) > music_getDuration(stack_top(sin2)))
+        if (music_getDuration(stack_top(sin1)) < music_getDuration(stack_top(sin2)))
         {
             e = stack_pop(sin1);
         }
