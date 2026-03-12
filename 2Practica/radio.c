@@ -34,8 +34,10 @@ void radio_free(Radio *r){
     for (i = 0; r->songs[i] != NULL && i < MAX_MSC; i++)
     {
         music_free(r->songs[i]);
+        r->songs[i] = NULL;
     }
     free(r);
+    r = NULL;
     return;
 }
 
@@ -51,6 +53,7 @@ Status radio_newMusic(Radio *r, char *desc){
 
     if (radio_contains(r, music_getId(music)) == TRUE){
         music_free(music);
+        music = NULL;
         return OK;
     }
     

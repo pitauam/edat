@@ -86,6 +86,7 @@ Music *music_initFromString(char *descr) {
   m = music_init();
   if (!m) {
     free(buffer);
+    buffer = NULL;
     return NULL;
   }
 
@@ -122,6 +123,7 @@ Music *music_initFromString(char *descr) {
   }
 
   free(buffer);
+  buffer = NULL;
   return m;
 }
 
@@ -155,6 +157,7 @@ void music_free (Music *m){
   }
   
   free(m);
+  m = NULL;
   return;
 }
 

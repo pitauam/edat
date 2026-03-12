@@ -38,6 +38,7 @@ void stack_free (Stack *s)
     if (!s) {return;}
 
     free(s);
+    s = NULL;
 
     return;
 }
@@ -146,6 +147,9 @@ Status mergeStacks (Stack *sin1, Stack *sin2, Stack *sout)
         e = stack_pop(ps);
         stack_push(sout, e);
     }
+
+    e = NULL;
+    ps = NULL;
 
     return OK;
 }
