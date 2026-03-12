@@ -1,0 +1,11 @@
+p2_e1
+p2_e2
+p2_e2a
+p2_e2b
+p2_e3
+
+*.exe
+*.out
+*.o
+
+.vscode/
