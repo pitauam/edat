@@ -158,7 +158,8 @@ Status mergeStacks2b (Stack *sin1, Stack *sin2, Stack *sout, P_stack_comp_art co
 
     void *e;        /*pointer to an element in the stack*/
     Stack *ps;      /*pointer to a stack*/
-    int *res;       /*result*/
+    int res = 0;        /*result*/
+
 
     if (!sin1 || !sin2 || !sout || sin1->s_size < 1 || sin2->s_size < 1 || !sin1->elements[0] || !sin2->elements[0] || !compare) {return ERROR;}
 
@@ -167,9 +168,9 @@ Status mergeStacks2b (Stack *sin1, Stack *sin2, Stack *sout, P_stack_comp_art co
 
     while (stack_isEmpty(sin1) == FALSE && stack_isEmpty(sin2) == FALSE)
     {
-        compare(stack_top(sin1), stack_top(sin2), res);
+        compare(stack_top(sin1), stack_top(sin2), &res);
 
-        if (*res > 0)
+        if (res < 0)
         {
             e = stack_pop(sin1);
         }
