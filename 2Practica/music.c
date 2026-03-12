@@ -149,7 +149,7 @@ int music_formatted_print (FILE * pf, const void * m) {
 	return counter;
 }
 
-void music_free (void * m){
+void music_free (Music *m){
   if(m == NULL){
     return;
   }

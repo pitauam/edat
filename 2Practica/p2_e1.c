@@ -7,6 +7,7 @@
 #include "radio.h"
 
 int show_player_menu(Stack *history);
+
 int show_player_menu(Stack *history) {
     int option;
     Music *m = NULL;
@@ -46,6 +47,7 @@ int main (int argc, char **argv) {
     if(!(f= fopen(argv[1], "r"))){
         return 1;
     }
+
     radio = radio_init();
 
     if(radio == NULL){
@@ -91,7 +93,6 @@ int main (int argc, char **argv) {
     }
 
     radio_free(radio);
-    stack_free(history);
     fclose(f);
     return 0;
 }

@@ -84,7 +84,7 @@ Music *music_initFromString(char *descr);
  *
  * @param m Music to free
  */
-void music_free (void * m);
+void music_free (Music * m);
 
 
 /**
