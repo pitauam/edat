@@ -329,6 +329,7 @@ do{
     *res = -1;
     return OK;
   }
+  i++;
   }while(n1[i] == n2[i]);
 
   *res = 0;
