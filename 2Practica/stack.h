@@ -104,5 +104,16 @@ size_t stack_size (const Stack *s);
  *  */
 int stack_print(FILE* fp, const Stack *s,  P_stack_ele_print f);
 
+/**
+* @brief: Merges two stacks
+*
+* @param sin1, first input stack
+* @param sin2, second input stack
+* @param sout, result stack
+* @return The function returns OK or ERROR
+**/
+Status mergeStacks (Stack *sin1, Stack *sin2, Stack *sout);
+
+
 #endif	/* STACK_H */
 

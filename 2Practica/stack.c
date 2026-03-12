@@ -118,3 +118,46 @@ int stack_print(FILE* fp, const Stack *s,  P_stack_ele_print f)
     return ch_printed;
 }
 
+
+Status mergeStacks (Stack *sin1, Stack *sin2, Stack *sout)
+{
+    void *e;        /*pointer to an element in the stack*/
+    Stack *ps;      /*pointer to a stack*/
+
+    if (!sin1 || !sin2 || !sout || sin1->s_size < 1 || sin2->s_size < 1 || !sin1->songs[0] || !sin2->songs[0]) {return ERROR;}
+
+    /*if the stack is not empty then the function won't work because it will concatenate instead of merging*/
+    if (stack_size(sout) != 0) {return ERROR;}
+
+    while (stack_isEmpty(sin1) == FALSE && stack_isEmpty(sin2) == FALSE)
+    {
+
+        if (music_getDuration(stack_top(sin1)) > music_getDuration(stack_top(sin2)))
+        {
+            e = stack_pop(sin1);
+        }
+        else 
+        {
+            e = stack_pop(sin2);
+        }
+        stack_push(sout, e);
+    }
+    
+    if (stack_isEmpty(sin1) == TRUE)
+    {
+        ps = sin2;
+    }
+    else
+    {
+        ps = sin1;
+    }
+
+    while (stack_isEmpty(ps) == FALSE)
+    {
+        e = stack_pop(ps);
+        stack_push(sout, e);
+    }
+
+    return OK;
+}
+

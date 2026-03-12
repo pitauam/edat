@@ -31,7 +31,7 @@ void radio_free(Radio *r){
     int i;
     if (r == NULL) {return;}
 
-    for (i = 0; r->songs[i] != NULL; i++)
+    for (i = 0; r->songs[i] != NULL && i < MAX_MSC; i++)
     {
         music_free(r->songs[i]);
     }
