@@ -13,7 +13,7 @@
 #include "stack.h"
 
 struct _Stack{
-    Music *songs[MAX_MSC];
+    void *elements[MAX_MSC];
     size_t s_size; /*Size of the stack*/
 };
 
@@ -48,7 +48,7 @@ Status stack_push (Stack *s, const void *ele)
     if (!s || !ele) {return ERROR;} /*if stack is null or if element is null returns error*/
     if (stack_size(s) == MAX_MSC) {return ERROR;} /*if stack is full it cannot add more songs*/
 
-    s->songs[s->s_size] = (Music*)ele; /*inserts the element in the stack*/
+    s->elements[s->s_size] = (Music*)ele; /*inserts the element in the stack*/
     s->s_size++;
     return OK;
 }
@@ -60,7 +60,7 @@ void * stack_pop (Stack *s)
     if (stack_isEmpty(s) == TRUE) {return NULL;}
 
     s->s_size--; /*decreases stack size*/
-    return s->songs[s->s_size+1]; /*returns top element of the stack*/
+    return s->elements[s->s_size+1]; /*returns top element of the stack*/
 }
 
 
@@ -69,7 +69,7 @@ void * stack_top (const Stack *s)
     if (!s) {return NULL;}
     if (stack_isEmpty(s) == TRUE) {return NULL;}
 
-    return s->songs[s->s_size];
+    return s->elements[s->s_size];
 }
 
 
@@ -99,7 +99,7 @@ int stack_print(FILE* fp, const Stack *s,  P_stack_ele_print f)
 
     for (i = 0; i < s->s_size; i++)
     {
-        temp = music_plain_print(fp, s->songs[i]);
+        temp = music_plain_print(fp, s->elements[i]);
         printf("\n");
         if (temp == -1) {return -1;}
         ch_printed+=temp;
@@ -113,7 +113,7 @@ Status mergeStacks (Stack *sin1, Stack *sin2, Stack *sout)
     void *e;        /*pointer to an element in the stack*/
     Stack *ps;      /*pointer to a stack*/
 
-    if (!sin1 || !sin2 || !sout || sin1->s_size < 1 || sin2->s_size < 1 || !sin1->songs[0] || !sin2->songs[0]) {return ERROR;}
+    if (!sin1 || !sin2 || !sout || sin1->s_size < 1 || sin2->s_size < 1 || !sin1->elements[0] || !sin2->elements[0]) {return ERROR;}
 
     /*if the stack is not empty then the function won't work because it will concatenate instead of merging*/
     if (stack_size(sout) != 0) {return ERROR;}
