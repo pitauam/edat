@@ -4,6 +4,7 @@
 
 #include "radio.h"
 #include "queue.h"
+#include "music.h"
 
 
 
@@ -16,9 +17,9 @@ int main(int argc, char **argv)
     Radio *r = NULL;
     FILE *pf = NULL;
     Queue *q = NULL;
-    Music *m;
 
     int i;
+    int choice;
 
     if (argc < 2) {
         printf("You need more than %i arguments, insert text file.\n", argc);
@@ -63,6 +64,20 @@ int main(int argc, char **argv)
         }
     }
 
+    choice = now_playing_menu(q);
+
+    while (choice !=2){
+
+        if (choice){
+            queue_pop(q);
+            choice = now_playing_menu(q);
+        }
+        else{
+            printf("Error, select one of the options");
+            choice = now_playing_menu(q);
+        }
+    }
+
     queue_free(q);
     fclose(pf);
     radio_free(r);
@@ -74,26 +89,25 @@ int main(int argc, char **argv)
 
 
 int now_playing_menu(Queue *q){
-    int i;
     Music *m = NULL;
     int choice;
 
     if (!q) {
-        return -1;
+        return 2; /*error, exiting*/
     }
-
-    i = 0;
 
     m = (Music*)queue_pop(q);
+
     if (m != NULL) {
         music_formatted_print(stdout, m);
+        printf("\nUpcoming:\n");
+	    queue_print(stdout, q, music_plain_print);
     }
     else{
-        printf("\nNo song currently playing.\n");
+        printf("\nNo songs available in the queue.\n");
     }
     	
-	printf("\nUpcoming:\n");
-	queue_print(stdout, q, music_plain_print);
+	
 
     printf("\n1. Next song\n");
     printf("2. Exit\n");
