@@ -46,6 +46,15 @@ void queue_free(Queue *q);
 Bool queue_isEmpty(const Queue *q);
 
 /**
+ * @brief Checks whether the queue is full or not.
+ *
+ * @param q A pointer to the queue.
+ *
+ * @return TRUE if the queue is full, FALSE if it is not.
+ */
+Bool _queue_is_full(const Queue *pq);
+
+/**
  * @brief This function is used to insert an element at the back position of a 
  * queue. A reference to the element is added to the queue container and the size 
  * is increased by 1. Time complexity: O(1).

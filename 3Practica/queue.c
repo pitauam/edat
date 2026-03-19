@@ -12,6 +12,7 @@ struct _Queue
 
 
 Queue *queue_new(){
+
     int i;
     Queue *new_queue = NULL;
 
@@ -27,4 +28,93 @@ Queue *queue_new(){
     new_queue->rear = &(new_queue->data[0]);
     
     return new_queue;
+}
+
+void queue_free(Queue *pq) { 
+	free((void *)pq); 
+}
+
+Bool queue_isEmpty(const Queue *q){
+
+	if(!q){
+		return TRUE;
+	}
+
+	if(q->rear == q->front){
+		return FALSE;
+	}
+
+	return TRUE;
+}
+Bool _queue_is_full(const Queue *q) {
+
+	if (q == NULL) {
+		return TRUE;
+	}
+	if ((q->rear + 1 - q->front) % MAX_QUEUE == 0) {
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+Status queue_push(Queue *q, void *ele){
+
+	if(!q ||!ele ||  (_queue_is_full(q) == TRUE)){
+		return ERROR;
+	}
+
+	*(q->rear) = (void *)ele;
+	q->rear = q->data + (q->rear + 1 - q->data) % MAX_QUEUE;
+
+	return OK;
+}
+
+void *queue_pop(Queue *q) {
+
+	void *e = NULL;
+	if ((q == NULL) || (queue_is_empty(q) == TRUE)) {
+		return NULL;
+	}
+	e = *(q->front);
+	*(q->front) = NULL;
+	q->front = q->data + (q->front + 1 - q->data) % MAX_QUEUE;
+
+	return e;
+}
+
+void *queue_getFront(const Queue *q) {
+
+	if ((q == NULL) || (queue_is_empty(q) == TRUE)) {
+		return NULL;
+	}
+
+	return *(q->front);
+}
+
+void *queue_getBack(const Queue *q) {
+
+	void **last_elem;
+	if ((q == NULL) || (queue_is_empty(q) == TRUE)) {
+		return NULL;
+	}
+
+	if (q->rear == q->data) {
+		last_elem = ((Queue *)q)->data + MAX_QUEUE - 1;
+	} else {
+		last_elem = q->rear - 1;
+	}
+
+	return *last_elem;
+}
+
+size_t queue_size(const Queue *q){
+
+	int i=0;
+	Queue *q_aux = NULL;
+
+	if(!q){
+		return 0;
+	}
+
 }
