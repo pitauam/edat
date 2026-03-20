@@ -110,11 +110,38 @@ void *queue_getBack(const Queue *q) {
 
 size_t queue_size(const Queue *q){
 
-	int i=0;
+	int i;
+	int total=0;
 	Queue *q_aux = NULL;
 
 	if(!q){
 		return 0;
 	}
 
+	for(i=0;i< MAX_QUEUE; i++){
+		if(queue_push(q_aux, queue_pop(q))== OK){
+			total++;
+		}
+	}
+	for(i=0; i < total; i++){
+		queue_push(q, queue_pop(q_aux));
+	}
+	return total;
+}
+
+int queue_print(FILE *fp, const Queue *q, p_queue_ele_print f){
+
+	int i=0;
+	int total =0;
+	int len =0;
+	if(!fp || !q || !f){
+		return -1;
+	}
+
+	for(i=0; i< queue_size(q); i++){
+		len = f(fp, q);
+		total += len;
+	}
+
+	return total;
 }
