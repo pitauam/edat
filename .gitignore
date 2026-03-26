@@ -4,8 +4,19 @@ p2_e2a
 p2_e2b
 p2_e3
 
+p3_e1
+p3_e2
+p3_e3
+p3_e4
+
+p4_e1
+p4_e2
+p4_e3
+
 *.exe
 *.out
 *.o
+*.pdf
+*.gch
 
 .vscode/
