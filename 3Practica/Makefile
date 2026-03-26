@@ -11,7 +11,7 @@ EJS = p3_e1
 #EJS = p3_e1 p3_e2 p3_e3
 #EXECUTABLES = $(EJS)
 ########################################################
-OBJECTSP3E1 = p3_e1.o radio.h music.h types.h queue.h 
+OBJECTSP3E1 = p3_e1.o music.o radio.o stack.o queue.o list.o 
 OBJECTSP3E2 = p3_e2.o
 OBJECTSP3E3 = p3_e3.o
 ########################################################
