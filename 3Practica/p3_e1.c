@@ -69,7 +69,6 @@ int main(int argc, char **argv)
     while (choice !=2){
 
         if (choice){
-            queue_pop(q);
             choice = now_playing_menu(q);
         }
         else{

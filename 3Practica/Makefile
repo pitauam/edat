@@ -30,7 +30,7 @@ p3_e3: $(OBJECTSP3E3)
 
 #exe's .os
 p3_e1.o: p3_e1.c radio.h music.h types.h queue.h 
-	$(CC) $(CFLAGS) -c p3_e1.c radio.h music.h types.h queue.h 
+	$(CC) $(CFLAGS) -c p3_e1.c
 
 p3_e2.o: 
 	$(CC) $(CFLAGS) -c p3_e2.c
@@ -65,10 +65,10 @@ clean:
 #without valgrind
 run:
 	@echo ">>>>>>Running p3_e1"
-	./p3_e1 radio_bfs.txt
+	./p3_e1 radio.txt
 
 #	@echo ">>>>>>Running p3_e2"
-#	./p3_e2
+#	./p3_e2 radio_bfs.txt
 
 #	@echo ">>>>>>Running p3_e3"
 #	./p3_e3
@@ -76,10 +76,10 @@ run:
 #valgrind
 runv:
 	@echo ">>>>>>Running p3_e1 with valgrind"
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p3_e1 radio_bfs.txt
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p3_e1 radio.txt
 
 #	@echo ">>>>>>Running p3_e2 with valgrind"
-#	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p3_e2 radio.txt
+#	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p3_e2 radio_bfs.txt
 
 #	@echo ">>>>>>Running p3_e3 with valgrind"
 #	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p3_e3 radio.txt	

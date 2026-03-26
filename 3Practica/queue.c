@@ -41,10 +41,10 @@ Bool queue_is_empty(const Queue *q){
 	}
 
 	if(q->rear == q->front){
-		return FALSE;
+		return TRUE;
 	}
 
-	return TRUE;
+	return FALSE;
 }
 Bool _queue_is_full(const Queue *q) {
 
@@ -110,37 +110,38 @@ void *queue_getBack(const Queue *q) {
 
 size_t queue_size(Queue *q){
 
-	int i;
-	size_t total=0;
-	Queue *q_aux = NULL;
-
 	if(!q){
 		return 0;
 	}
 
-	for(i=0;i< MAX_QUEUE; i++){
-		if(queue_push(q_aux, queue_pop(q)) == OK){
-			total++;
-		}
-	}
-	for(i=0; i < total; i++){
-		queue_push(q, queue_pop(q_aux));
-	}
-	return total;
+	return (size_t)((q->rear - q->front + MAX_QUEUE) % MAX_QUEUE);
 }
 
 int queue_print(FILE *fp, Queue *q, p_queue_ele_print f){
 
-	int i=0;
+	size_t i;
+	size_t total_elements;
 	int total =0;
 	int len =0;
+	void **current = NULL;
+
 	if(!fp || !q || !f){
 		return -1;
 	}
 
-	for(i=0; i< queue_size(q); i++){
-		len = f(fp, q);
+	total_elements = queue_size(q);
+	current = q->front;
+
+	for(i = 0; i < total_elements; i++){
+		len = f(fp, *current);
+		if (len < 0) {
+			return -1;
+		}
 		total += len;
+		if (i + 1 < total_elements) {
+			total += fprintf(fp, "\n");
+		}
+		current = q->data + (current + 1 - q->data) % MAX_QUEUE;
 	}
 
 	return total;
