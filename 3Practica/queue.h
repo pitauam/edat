@@ -43,7 +43,7 @@ void queue_free(Queue *q);
  *
  * @return TRUE if the queue is empty, FALSE if it is not.
  */
-Bool queue_isEmpty(const Queue *q);
+Bool queue_is_empty(const Queue *q);
 
 /**
  * @brief Checks whether the queue is full or not.
@@ -105,7 +105,7 @@ void *queue_getBack(const Queue *q);
  *
  * @return The queue size, 0 in case of error. 
  */
-size_t queue_size(const Queue *q);
+size_t queue_size(Queue *q);
 
 /**
  * @brief  This function prints the queue content to an output stream.
@@ -117,6 +117,6 @@ size_t queue_size(const Queue *q);
  * @return On success this function returns the number of characters printed. In 
  * case of error it returns a negative value.
  *  */
-int queue_print(FILE *fp, const Queue *q, p_queue_ele_print f);
+int queue_print(FILE *fp, Queue *q, p_queue_ele_print f);
 
 #endif	/* QUEUE_H */

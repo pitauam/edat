@@ -34,7 +34,7 @@ void queue_free(Queue *pq) {
 	free((void *)pq); 
 }
 
-Bool queue_isEmpty(const Queue *q){
+Bool queue_is_empty(const Queue *q){
 
 	if(!q){
 		return TRUE;
@@ -108,10 +108,10 @@ void *queue_getBack(const Queue *q) {
 	return *last_elem;
 }
 
-size_t queue_size(const Queue *q){
+size_t queue_size(Queue *q){
 
 	int i;
-	int total=0;
+	size_t total=0;
 	Queue *q_aux = NULL;
 
 	if(!q){
@@ -119,7 +119,7 @@ size_t queue_size(const Queue *q){
 	}
 
 	for(i=0;i< MAX_QUEUE; i++){
-		if(queue_push(q_aux, queue_pop(q))== OK){
+		if(queue_push(q_aux, queue_pop(q)) == OK){
 			total++;
 		}
 	}
@@ -129,7 +129,7 @@ size_t queue_size(const Queue *q){
 	return total;
 }
 
-int queue_print(FILE *fp, const Queue *q, p_queue_ele_print f){
+int queue_print(FILE *fp, Queue *q, p_queue_ele_print f){
 
 	int i=0;
 	int total =0;
