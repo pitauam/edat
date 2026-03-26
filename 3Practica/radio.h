@@ -217,5 +217,20 @@ int radio_getnumber(Radio *r);
 * @param to_id, id of the destination Music
 * @return The function returns OK or ERROR
 **/
+
 Status radio_depthSearch (Radio *r, long from_id, long to_id);
+
+/**
+* @brief: Makes a search from the origin music to the final music of a radio using the
+* breadth-first search algorithm through a Queue
+*
+* The function prints each visited music while traversing the radio
+*
+* @param r, Pointer to radio
+* @param from_id, id of the origin Music
+* @param to_id, id of the destination Music
+* @return The function returns OK or ERROR
+**/
+Status radio_breadthSearch (Radio *r, long from_id, long to_id);
+
 #endif /* radio_H */

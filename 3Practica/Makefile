@@ -11,7 +11,7 @@ EJS = p3_e1
 #EJS = p3_e1 p3_e2 p3_e3
 #EXECUTABLES = $(EJS)
 ########################################################
-OBJECTSP3E1 = p3_e1.o music.o radio.o stack.o queue.o list.o 
+OBJECTSP3E1 = p3_e1.o music.o radio.o stack.o queue.o
 OBJECTSP3E2 = p3_e2.o
 OBJECTSP3E3 = p3_e3.o
 ########################################################
@@ -52,7 +52,7 @@ stack.o: stack.c music.h types.h stack.h
 queue.o: queue.c queue.h types.h
 	$(CC) $(CFLAGS) -c queue.c
 
-list.o: list.c
+#list.o: list.c
 	
 #clean all .os
 clear:
@@ -60,7 +60,7 @@ clear:
 
 #clean all files made by makefile
 clean:
-	rm -rf *.o $(EXECUTABLES)
+	rm -rf *.o *.gch $(EXECUTABLES) 
 
 #without valgrind
 run:

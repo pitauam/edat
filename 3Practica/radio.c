@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "stack.h"
+#include "queue.h"
 
 #define STR_LENGTH 64
 
@@ -356,4 +357,60 @@ Status radio_depthSearch (Radio *r, long from_id, long to_id)
     
     stack_free(s);
     return OK;
+}
+
+Status radio_breadthSearch (Radio *r, long from_id, long to_id){
+
+    if (!r || r->num_music < 0 || r->num_relations < 0 || from_id < 0 || to_id < 0) return ERROR;
+
+    Music *from_m = NULL;
+    Music *to_m = NULL;
+    int i, p_orig = -1;
+    Status st = OK;
+    Stack *q = NULL;
+
+    for (i = 0; i < radio_getNumberOfMusic(r); i++) {
+        if (music_getId(r->songs[i]) == from_id) from_m = r->songs[i];
+        if (music_getId(r->songs[i]) == to_id) to_m = r->songs[i];
+    }
+
+    if (!from_m || !to_m) return ERROR;
+
+    for (i = 0; i < radio_getNumberOfMusic(r); i++) {
+        music_setState(r->songs[i], NOT_LISTENED);
+    }
+
+    q = queue_new();
+    if (!q) return ERROR;
+
+    music_setState(from_m, LISTENED);
+    queue_push(q, from_m);
+
+    while (queue_isEmpty(q) == FALSE && st == OK){
+
+        from_m = queue_pop(q);
+        
+        music_plain_print_p2_e3(stdout, from_m);
+        fprintf(stdout, "\n");
+
+        if (music_cmp(from_m, to_m) == 0) {
+            st = ERROR;
+        } else {
+            p_orig = music_getIndex(from_m);
+            for (i = 0; i < radio_getNumberOfMusic(r); i++) {
+                if (r->relations[p_orig][i] == TRUE) {
+                    if (music_getState(r->songs[i]) == NOT_LISTENED) {
+                        music_setState(r->songs[i], LISTENED);
+                        queue_push(q, r->songs[i]);
+                    }
+                }
+            }
+        }
+    }
+    
+    queue_free(s);
+    return OK;
+
+
+
 }
