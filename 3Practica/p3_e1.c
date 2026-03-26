@@ -31,7 +31,7 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    if(!(pf = fopen(argv[0], "r"))) {
+    if(!(pf = fopen(argv[1], "r"))) {
         printf("Error while opening file\n");
         radio_free(r);
         return -1;

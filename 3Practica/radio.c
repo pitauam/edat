@@ -367,7 +367,7 @@ Status radio_breadthSearch (Radio *r, long from_id, long to_id){
     Music *to_m = NULL;
     int i, p_orig = -1;
     Status st = OK;
-    Stack *q = NULL;
+    Queue *q = NULL;
 
     for (i = 0; i < radio_getNumberOfMusic(r); i++) {
         if (music_getId(r->songs[i]) == from_id) from_m = r->songs[i];
@@ -386,7 +386,7 @@ Status radio_breadthSearch (Radio *r, long from_id, long to_id){
     music_setState(from_m, LISTENED);
     queue_push(q, from_m);
 
-    while (queue_isEmpty(q) == FALSE && st == OK){
+    while (queue_is_empty(q) == FALSE && st == OK){
 
         from_m = queue_pop(q);
         
@@ -408,9 +408,6 @@ Status radio_breadthSearch (Radio *r, long from_id, long to_id){
         }
     }
     
-    queue_free(s);
+    queue_free(q);
     return OK;
-
-
-
 }

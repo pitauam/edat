@@ -9,7 +9,7 @@ EJS = p3_e1
 #arreglar AMEFIELK
 
 #EJS = p3_e1 p3_e2 p3_e3
-#EXECUTABLES = $(EJS)
+EXECUTABLES = $(EJS)
 ########################################################
 OBJECTSP3E1 = p3_e1.o music.o radio.o stack.o queue.o
 OBJECTSP3E2 = p3_e2.o
@@ -65,7 +65,7 @@ clean:
 #without valgrind
 run:
 	@echo ">>>>>>Running p3_e1"
-	./p3_e1 radio.txt
+	./p3_e1 radio_bfs.txt
 
 #	@echo ">>>>>>Running p3_e2"
 #	./p3_e2
@@ -76,7 +76,7 @@ run:
 #valgrind
 runv:
 	@echo ">>>>>>Running p3_e1 with valgrind"
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p3_e1 radio.txt
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p3_e1 radio_bfs.txt
 
 #	@echo ">>>>>>Running p3_e2 with valgrind"
 #	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p3_e2 radio.txt
