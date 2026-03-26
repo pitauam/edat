@@ -240,7 +240,7 @@ int radio_print (FILE *pf, const Radio *r){
     
     for (i = 0; i < r->num_music;i++)
     {
-        sum = music_plain_print(pf, r->songs[i]);
+        sum = music_plain_print_p2_e3(pf, r->songs[i]);
         if (sum == -1) {return -1;}
         total_chars += sum;
 
@@ -254,7 +254,7 @@ int radio_print (FILE *pf, const Radio *r){
                 fprintf(pf, " "); 
                 total_chars++;
 
-                sum = music_plain_print(pf, r->songs[j]);
+                sum = music_plain_print_p2_e3(pf, r->songs[j]);
                 if (sum == -1) return -1;
                 total_chars += sum;
             }

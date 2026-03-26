@@ -84,9 +84,6 @@ int main(int argc, char **argv)
     return 0;
 }
 
-
-
-
 int now_playing_menu(Queue *q){
     Music *m = NULL;
     int choice;
@@ -100,13 +97,11 @@ int now_playing_menu(Queue *q){
     if (m != NULL) {
         music_formatted_print(stdout, m);
         printf("\nUpcoming:\n");
-	    queue_print(stdout, q, music_plain_print);
+	    queue_print(stdout, q, music_plain_print_p2_e3);
     }
     else{
         printf("\nNo songs available in the queue.\n");
     }
-    	
-	
 
     printf("\n1. Next song\n");
     printf("2. Exit\n");
