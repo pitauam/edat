@@ -226,10 +226,23 @@ Status radio_depthSearch (Radio *r, long from_id, long to_id);
 *
 * The function prints each visited music while traversing the radio
 *
+*
 * @param r, Pointer to radio
 * @param from_id, id of the origin Music
 * @param to_id, id of the destination Music
 * @return The function returns OK or ERROR
+*
+* Difference between depthSearch and breadthSearch:
+* DFS explores one branch until it reaches the end of it by using a stack, while BFS explores
+* the graph level by level without reaching the end of a branch since the beginning by using a queue
+*
+* Problems where BFS would work better:
+* Finding directions in a GPS to reach a destination (DFS would take a lot of time because it would need to reach the end of every path)
+* Searching the closest recommendation between songs without having to search all the graph/tree
+*
+* Problems where DFS might work better:
+* Exploring all possible paths in a maze
+* Checking whether a path exists in a deep graph or not.
 **/
 Status radio_breadthSearch (Radio *r, long from_id, long to_id);
 

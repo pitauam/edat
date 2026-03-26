@@ -400,8 +400,10 @@ Status radio_breadthSearch (Radio *r, long from_id, long to_id){
             for (i = 0; i < radio_getNumberOfMusic(r); i++) {
                 if (r->relations[p_orig][i] == TRUE) {
                     if (music_getState(r->songs[i]) == NOT_LISTENED) {
-                        music_setState(r->songs[i], LISTENED);
-                        queue_push(q, r->songs[i]);
+                        if (queue_push(q, r->songs[i]) != ERROR)
+                        {
+                            music_setState(r->songs[i], LISTENED);
+                        }   
                     }
                 }
             }

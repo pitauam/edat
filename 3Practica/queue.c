@@ -121,8 +121,8 @@ int queue_print(FILE *fp, Queue *q, p_queue_ele_print f){
 
 	size_t i;
 	size_t total_elements;
-	int total =0;
-	int len =0;
+	int total = 0;
+	int len = 0;
 	void **current = NULL;
 
 	if(!fp || !q || !f){
