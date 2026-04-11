@@ -158,11 +158,4 @@ int list_size(const List *pl);
  */
 int list_print(FILE *fp, const List *pl, p_list_ele_print f);
 
-/**
- * @brief Creates a new node
- *
- * @return Returns a new node
- */
-Node *node_new ();
-
 #endif	/* LIST_H */

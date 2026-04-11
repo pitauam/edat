@@ -18,6 +18,12 @@ struct _List
     int size;           /*!< size of the list */
 };
 
+/**
+ * @brief Creates a new node
+ *
+ * @return Returns a new node
+ */
+Node *node_new ();
 
 Node *node_new () {
     Node *pn = NULL;
@@ -171,7 +177,7 @@ void *list_popBack(List *pl) {
 
 
 void *list_getFront(List *pl) {
-    if (!pl || list_isEmpty(pl)) {
+    if (!pl || list_isEmpty(pl) == TRUE) {
         return NULL;
     }
 
@@ -212,8 +218,28 @@ int list_size(const List *pl){
 
 
 int list_print(FILE *fp, const List *pl, p_list_ele_print f){
+    Node *pn = NULL; // Puntero auxiliar para recorrer los nodos
+    int total = 0;   // Para ir sumando los caracteres que se imprimen
+    int printed = 0; // Para guardar lo que devuelve 'f' en cada paso
 
-    
+    if (!pl || !fp || !f) {
+        return -1;
+    }
 
+    pn = pl->first;
 
+    while (pn != NULL)
+    {
+        printed = f(fp, (void*)pn->info);
+        if (printed == -1)
+        {
+            return -1;
+        }
+        
+        total+=printed;
+
+        pn = pn->next;
+    }
+
+    return total;
 }
