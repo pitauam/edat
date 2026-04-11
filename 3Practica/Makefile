@@ -30,10 +30,10 @@ p3_e3: $(OBJECTSP3E3)
 p3_e1.o: p3_e1.c radio.h music.h types.h queue.h 
 	$(CC) $(CFLAGS) -c p3_e1.c
 
-p3_e2.o: 
+p3_e2.o: p3_e2.c radio.h music.h types.h queue.h
 	$(CC) $(CFLAGS) -c p3_e2.c
 
-p3_e3.o: 
+p3_e3.o: p3_e3.c list.h types.h radio.h music.h
 	$(CC) $(CFLAGS) -c p3_e3.c
 
 #general .os
@@ -50,8 +50,8 @@ stack.o: stack.c music.h types.h stack.h
 queue.o: queue.c queue.h types.h
 	$(CC) $(CFLAGS) -c queue.c
 
-list.o: list.c list.h
-	$(CC) $(CFLAGS) -c list.o
+list.o: list.c list.h types.h
+	$(CC) $(CFLAGS) -c list.c
 	
 #clean all .os
 clear:
