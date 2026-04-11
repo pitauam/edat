@@ -218,9 +218,9 @@ int list_size(const List *pl){
 
 
 int list_print(FILE *fp, const List *pl, p_list_ele_print f){
-    Node *pn = NULL; // Puntero auxiliar para recorrer los nodos
-    int total = 0;   // Para ir sumando los caracteres que se imprimen
-    int printed = 0; // Para guardar lo que devuelve 'f' en cada paso
+    Node *pn = NULL;
+    int total = 0;
+    int printed = 0;
 
     if (!pl || !fp || !f) {
         return -1;
@@ -235,7 +235,7 @@ int list_print(FILE *fp, const List *pl, p_list_ele_print f){
         {
             return -1;
         }
-        
+
         total+=printed;
 
         pn = pn->next;
