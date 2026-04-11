@@ -19,22 +19,24 @@ struct _List
 };
 
 
+Node *node_new () {
+    Node *pn = NULL;
+    pn = (Node *) malloc(sizeof(Node));
+    if (pn == NULL) {
+        return NULL;
+    }
+    pn->info = NULL;
+    pn->next = NULL;
+    return pn;
+}
+
+
 List *list_new(){
     List *pl = NULL;
 
     if (!(pl = calloc(1, sizeof(List)))) {
         return NULL; 
     }
-
-    /*
-    if (!(pl->first = calloc(1, sizeof(Node)))) {
-        return NULL; 
-    }
-
-    if (!(pl->last = calloc(1, sizeof(Node)))) {
-        return NULL; 
-    }
-    */
 
     pl->first = NULL;
     pl->last = NULL;
@@ -45,7 +47,7 @@ List *list_new(){
 
 
 Bool list_isEmpty(const List *pl){
-    if (!pl) return FALSE;
+    if (!pl) return TRUE;
 
     if (pl->first == NULL)
     {
@@ -56,115 +58,154 @@ Bool list_isEmpty(const List *pl){
 }
 
 
-Status list_pushFront(List *pl, const void *e){
-Node *pn = NULL;
-if ((pl == NULL) || (e == NULL)) {
-return ERROR;
-}
-pn = node_new ();
-if (pn == NULL) {
-return ERROR;
-}
-pn ->info = (void *)e;
-pn ->next = pl ->first;
-pl ->first = pn;
-return OK;
-}
+Status list_pushFront(List *pl, const void *e) {
+    Node *pn = NULL;
 
-
-Status list_pushBack(List *pl, const void *e){
-    Node *pn;
-    Node *pn_last;
-
-    if (!pl || !e) return ERROR;
+    if (pl == NULL || e == NULL) {
+        return ERROR;
+    }
 
     pn = node_new();
-    if (!pn) return ERROR;
+    if (!pn) {
+        return ERROR;
+    }
 
-    pn->info = (void*)e;
+    pn->info = (void *)e;
+    pn->next = pl->first;
+    pl->first = pn;
 
-    if (list_isEmpty(pl) == TRUE)
+    if (!pl->last) 
     {
-        pl->first = pn;
-        pl->size++;
-        return OK;
+        pl->last = pn;
     }
 
-    pn_last = pl->first;
-    while (pn_last->next != NULL)
-    {   
-        pn_last = pn_last ->next;
-    }
-
-    pn_last->next = pn;
     pl->size++;
-
     return OK;
 }
 
 
-void *list_popFront(List *pl){
-    void *e = NULL;
+Status list_pushBack(List *pl, const void *e) {
     Node *pn = NULL;
-    if ((!pl) || (list_is_empty(pl) == TRUE)) 
-    {
+
+    if (!pl || !e) return ERROR;
+
+    pn = node_new();
+    if (!pn) {
+        return ERROR;
+    }
+
+    pn->info = (void *)e;
+    pn->next = NULL;
+
+    if (list_isEmpty(pl) == TRUE) {
+        pl->first = pn;
+        pl->last = pn;
+    } else {
+        pl->last->next = pn;
+        pl->last = pn;
+    }
+
+    pl->size++;
+    return OK;
+}
+
+
+void *list_popFront(List *pl) {
+    void *e = NULL;
+    Node *node_to_remove = NULL;
+
+    if (!pl || list_isEmpty(pl) == TRUE) {
         return NULL;
     }
+
+    node_to_remove = pl->first;
+    e = node_to_remove->info;
     
-    pn = pl ->first;
-    e = pn ->info;
-    pl ->first = pn ->next;
-    free((void *)pn);
+    pl->first = node_to_remove->next;
+    
+    if (pl->first == NULL) {
+        pl->last = NULL;
+    }
+
+    free(node_to_remove);
+    pl->size--;
+
     return e;
 }
 
 
-void *list_popBack(List *pl){
-void *e = NULL;
-Node *pn = NULL;
-if ((pl == NULL) || (list_is_empty(pl) == TRUE)) {
-return NULL;
-}
-if (pl ->first ->next == NULL) {
-e = pl ->first ->info;
-free((void *)pl ->first);
-pl ->first = NULL;
-return e;
-}
-pn = pl ->first;
-while (pn ->next ->next != NULL) {
-pn = pn ->next;
-}
-e = pn ->next ->info;
-free((void *)pn ->next);
-pn ->next = NULL;
-return e;
+void *list_popBack(List *pl) {
+    void *e = NULL;
+    Node *node_to_remove = NULL;
+
+    if (pl == NULL || list_isEmpty(pl) == TRUE) {
+        return NULL;
+    }
+
+    /*if there is only one element*/
+    if (pl->first->next == NULL) 
+    {
+        e = pl->first->info;
+        free((void *)pl->first);
+        pl->first = NULL;
+        pl->last = NULL;
+        pl->size--;
+        return e;
+    }
+
+    node_to_remove = pl->first;
+    while (node_to_remove->next->next != NULL) 
+    {
+        node_to_remove = node_to_remove->next;
+    }
+
+    e = node_to_remove->next->info;
+    free((void *)node_to_remove->next);
+    node_to_remove->next = NULL;
+    
+    pl->last = node_to_remove;
+    pl->size--;
+
+    return e;
 }
 
 
-void *list_getFront(List *pl){
-    if (!pl) return;
-    return pl->first;
+void *list_getFront(List *pl) {
+    if (!pl || list_isEmpty(pl)) {
+        return NULL;
+    }
+
+    return pl->first->info; 
 }
+
+
 void *list_getBack(List *pl){
-    if (!pl) return;
-    return pl->first;
+    if (!pl || list_isEmpty(pl) == TRUE) {
+        return NULL;
+    }
+    
+    return pl->last->info;
 }
 
 
-void list_free(List *pl){
-if (pl == NULL) {
-return;
-}
-while (list_is_empty(pl) == FALSE) {
-list_pop_front(pl);
-}
-free((void *)pl);
+void list_free(List *pl) {
+    if (pl == NULL) {
+        return;
+    }
+
+    while (list_isEmpty(pl) == FALSE) {
+        list_popFront(pl);
+    }
+
+    free((void *)pl);
+    return;
 }
 
 
 int list_size(const List *pl){
-    if (!pl) return -1;
+    if (!pl) {
+        return -1;
+    }
 
     return pl->size;
 }
@@ -175,16 +216,4 @@ int list_print(FILE *fp, const List *pl, p_list_ele_print f){
     
 
 
-}
-
-
-Node *node_new () {
-    Node *pn = NULL;
-    pn = (Node *) malloc(sizeof(Node));
-    if (pn == NULL) {
-        return NULL;
-    }
-    pn->info = NULL;
-    pn->next = NULL;
-    return pn;
 }
