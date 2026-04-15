@@ -9,11 +9,10 @@ int main(int argc, char **argv){
     List *list = NULL;
     Radio *radio = NULL;
     FILE *f = NULL;
+    void *music=NULL;
 
-    int n_music;
+    int n_music, total;
     int i;
-    int j;
-    char e[200];
 
     if (!(radio = radio_init())){
         printf("Error while creating radio\n");
@@ -41,41 +40,36 @@ int main(int argc, char **argv){
 
     n_music = radio_getNumberOfMusic(radio);
 
-    for(i=0; i< n_music; i+=2){
-        if(list_pushBack(list, radio_getMusic(radio, i)) == ERROR){
-            radio_free(radio);
-            list_free(list);
-            fclose(f);
-            return -1;
-        }
-        if(list_pushFront(list, radio_getMusic(radio, i+1)) == ERROR){
-            radio_free(radio);
-            list_free(list);
-            fclose(f);
-            return -1;
+    for (i = 0; i < n_music; i++) {
+        music = radio_getMusic(radio, i);
+        if (i % 2 == 0) {
+            list_pushBack(list, music);
+        } else {
+            list_pushFront(list, music);
         }
     }
 
+    total = list_size(list);
+
     fprintf(stdout, "Finished inserting. Now we extract from the beginning: \n");
-    for(i=0; i< (list_size(list)/2); i++){
-        strcpy(e, list_popFront(list));
-        if(list_popFront(list)){
-            radio_free(radio);
-            list_free(list);
-            fclose(f);
-            return -1;
-        }
-        fprintf(stdout, "%s", e);
+    for (i = 0; i < total / 2; i++) {
+        void *e = list_popFront(list);
+        if (e) music_plain_print(stdout, e);
     }
-    fprintf(stdout,"Now we extract from the back: \n");
-    for(i=0; i< (list_size(list)/2); i++){
-        strcpy(e, list_popBack(list));
-        if(list_popFront(list)){
-            radio_free(radio);
-            list_free(list);
-            fclose(f);
-            return -1;
-        }
-        fprintf(stdout, "%s", e);
+
+    fprintf(stdout, "\n");
+
+    fprintf(stdout, "\nNow we extract from the back: \n");
+    while (!list_isEmpty(list)) {
+        void *e = list_popBack(list);
+        if (e) music_plain_print(stdout, e);
     }
+    fprintf(stdout, "\n");
+
+
+    radio_free(radio);
+    list_free(list);
+    fclose(f);
+
+    return 0;
 }

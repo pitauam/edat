@@ -4,9 +4,9 @@ CFLAGS= -g -Wall -pedantic
 
 #EJS = p3_e1
 #EJS = p3_e2
-EJS = p3_e3
+#EJS = p3_e3
 
-#EJS = p3_e1 p3_e2 p3_e3
+EJS = p3_e1 p3_e2 p3_e3
 EXECUTABLES = $(EJS)
 ########################################################
 OBJECTSP3E1 = p3_e1.o music.o radio.o stack.o queue.o
@@ -63,22 +63,22 @@ clean:
 
 #without valgrind
 run:
-#	@echo ">>>>>>Running p3_e1"
-#	./p3_e1 radio.txt
+	@echo ">>>>>>Running p3_e1"
+	./p3_e1 radio.txt
 
-#	@echo ">>>>>>Running p3_e2"
-#	./p3_e2 radio_bfs.txt 1 2
+	@echo ">>>>>>Running p3_e2"
+	./p3_e2 radio_bfs.txt 1 2
 
 	@echo ">>>>>>Running p3_e3"
-	./p3_e3 radio.txt
+	./p3_e3 radio_bfs.txt
 
 #valgrind
 runv:
-#	@echo ">>>>>>Running p3_e1 with valgrind"
-#	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p3_e1 radio.txt 4
+	@echo ">>>>>>Running p3_e1 with valgrind"
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p3_e1 radio.txt 4
 
-#	@echo ">>>>>>Running p3_e2 with valgrind"
-#	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p3_e2 radio_bfs.txt 1 2
+	@echo ">>>>>>Running p3_e2 with valgrind"
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p3_e2 radio_bfs.txt 1 2
 
 	@echo ">>>>>>Running p3_e3 with valgrind"
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p3_e3 radio.txt	
