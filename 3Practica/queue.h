@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include "types.h"
 
-#define MAX_QUEUE 30
+#define MAX_QUEUE 8
 
 /** 
  * @brief Data type to declare a queue variable. 

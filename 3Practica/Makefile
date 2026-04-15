@@ -59,7 +59,7 @@ clear:
 
 #clean all files made by makefile
 clean:
-	rm -rf *.o *.gch $(EXECUTABLES) 
+	rm -rf *.o *.gch $(EXECUTABLES) test_queue
 
 #without valgrind
 run:
@@ -82,3 +82,8 @@ runv:
 
 	@echo ">>>>>>Running p3_e3 with valgrind"
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p3_e3 radio.txt	
+
+test:
+	@echo "Running tests"
+	gcc queue.c test_queue.c -o test_queue
+	valgrind --leak-check=full ./test_queue
