@@ -14,7 +14,7 @@ OBJECTSP3E2 = p3_e2.o music.o radio.o stack.o queue.o
 OBJECTSP3E3 = p3_e3.o music.o radio.o stack.o queue.o list.o
 ########################################################
 
-all: $(EJS) clear
+all: $(EJS)
 
 #executables
 p3_e1: $(OBJECTSP3E1) 

@@ -14,6 +14,11 @@ int main(int argc, char **argv){
     int n_music, total;
     int i;
 
+    if (argc < 2) {
+        printf("You need more than %i argument(s), insert text file.\n", argc);
+        return -1;
+    }
+
     if (!(radio = radio_init())){
         printf("Error while creating radio\n");
         return -1;
@@ -54,15 +59,21 @@ int main(int argc, char **argv){
     fprintf(stdout, "Finished inserting. Now we extract from the beginning: \n");
     for (i = 0; i < total / 2; i++) {
         void *e = list_popFront(list);
-        if (e) music_plain_print(stdout, e);
+        if (e) {
+            music_plain_print_p2_e3(stdout, e);
+            printf(" ");
+        }
     }
 
     fprintf(stdout, "\n");
 
-    fprintf(stdout, "\nNow we extract from the back: \n");
+    fprintf(stdout, "\nNow we extract from the end:\n");
     while (!list_isEmpty(list)) {
         void *e = list_popBack(list);
-        if (e) music_plain_print(stdout, e);
+        if (e) {
+            music_plain_print_p2_e3(stdout, e);
+            printf(" ");
+        }
     }
     fprintf(stdout, "\n");
 
