@@ -72,7 +72,7 @@ run:
 	./p2_e2b playlistA.txt playlistB.txt
 
 	@echo ">>>>>>Running p2_e3"
-	./p2_e3 radio_dfs.txt 1 9
+	./p2_e3 radio_dfs.txt 1 15
 
 runv:
 	@echo ">>>>>>Running p2_e1 with valgrind"
@@ -85,6 +85,6 @@ runv:
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p2_e2b playlistA.txt playlistB.txt 
 
 	@echo ">>>>>>Running p2_e3 with valgrind"
-	valgrind --leak-check=full --show-leak-kinds=all ./p2_e3 radio_dfs.txt 1 9
+	valgrind --leak-check=full --show-leak-kinds=all ./p2_e3 radio_dfs.txt 1 15
 
 	

@@ -1,0 +1,380 @@
+/**
+ * @file  music.c
+ * @author Profesores EDAT
+ * @date February 2026
+ * @mersion 1.0
+ * @brief Library to manage ADT Music
+ *
+ * @details 
+ * 
+ * @see
+ */
+
+#include <string.h>
+#include "music.h"
+
+/* START [STR_LENGTH] */
+#define STR_LENGTH 64
+/* END [STR_LENGTH] */
+
+/* Music declaration goes here */
+struct _Music
+{
+  long id;
+  char title[STR_LENGTH];
+  char artist[STR_LENGTH];
+  unsigned short duration;
+  State state;
+  int index;
+};
+
+
+/*----------------------------------------------------------------------------------------*/
+/*
+Private function:
+*/
+Status music_setField (Music *m, char *key, char *value);
+
+Status music_setField (Music *m, char *key, char *value) {
+  if (!key || !value) return ERROR;
+
+  if (strcmp(key, "id") == 0) {
+    return music_setId(m, atol(value));
+  } else if (strcmp(key, "title") == 0) {
+    return music_setTitle(m, value);
+  } else if (strcmp(key, "artist") == 0) {
+    return music_setArtist(m, value);
+  } else if (strcmp(key, "duration") == 0) {
+    return music_setDuration(m, atol(value));
+  } else if (strcmp(key, "state") == 0) {
+    return music_setState(m, (State)atoi(value));
+  }
+
+  return ERROR;
+}
+
+/*----------------------------------------------------------------------------------------*/
+Music * music_init (){
+  Music *m = NULL;
+
+  if(!(m = (Music*)malloc(1*sizeof(Music)))){
+    return NULL;
+  }
+
+  m->id = 0;
+  m->title[0] = '\0';
+  m->artist[0] = '\0';
+  m->duration = 0;
+  m->state = NOT_LISTENED;
+  m->index = 0;
+
+  return m;
+}
+
+
+
+Music *music_initFromString(char *descr) {
+  Music *m;
+  char *p;
+  char *key_start;
+  char *value_start;
+  char *buffer;
+
+  if (!descr) return NULL;
+
+  buffer = strdup(descr);          /* copiar entrada */
+  if (!buffer) return NULL;
+
+  m = music_init();
+  if (!m) {
+    free(buffer);
+    buffer = NULL;
+    return NULL;
+  }
+
+  p = buffer;
+
+  while (*p) {
+    /* Skip whitespace */
+    while (*p == ' ' || *p == '\t' || *p == '\n')
+      p++;
+
+    if (!*p) break;
+
+    /* Parse key */
+    key_start = p;
+    while (*p && *p != ':')
+      p++;
+
+    if (!*p) break;
+    *p++ = '\0';   /* terminate key */
+
+    /* Expect opening quote */
+    if (*p != '"') break;
+    p++;
+
+    /* Parse value */
+    value_start = p;
+    while (*p && *p != '"')
+      p++;
+
+    if (!*p) break;
+    *p++ = '\0';   /* terminate value */
+
+    music_setField(m, key_start, value_start);
+  }
+
+  free(buffer);
+  buffer = NULL;
+  return m;
+}
+
+
+/**  Remaining functions of music.h to be implemented here **/
+
+
+int music_formatted_print (FILE * pf, const void * m) {
+	Music * aux;
+	int counter = 0, minutes, sec;
+	if (!pf || !m) return -1;
+
+	aux = (Music*) m;
+	
+	if (!aux->duration || aux->duration <= 0) return -1;
+	minutes = aux->duration / 60;
+    sec = aux->duration % 60;
+	
+	counter = fprintf(pf, "\t ɴᴏᴡ ᴘʟᴀʏɪɴɢ: %s\n", aux->title);
+	counter += fprintf(pf, "\t • Artist %s •\n", aux->artist);
+	counter += fprintf(pf, "\t──────────⚪──────────\n");
+	counter += fprintf(pf, "\t\t◄◄⠀▐▐ ⠀►►\n");
+	counter += fprintf(pf, "\t 0:00 / %02d:%02d ───○ 🔊⠀\n\n", minutes, sec);
+	
+	return counter;
+}
+
+void music_free (Music *m){
+  if(m == NULL){
+    return;
+  }
+  
+  free(m);
+  m = NULL;
+  return;
+}
+
+long music_getId (const Music * m){
+  if(m == NULL){
+    return -1;
+  }
+
+  return m->id;
+}
+
+const char* music_getTitle (const Music * m){
+  if(m == NULL){
+    return NULL;
+  }
+
+  return m->title;
+}
+
+const char* music_getArtist (const Music * m){
+  if(m == NULL){
+    return NULL;
+  }
+
+  return m->artist;
+}
+
+unsigned short music_getDuration (const Music * m){
+  if(m == NULL || m->duration < 0){
+    return -1;
+  }
+
+  return m->duration;
+}
+
+State music_getState (const Music * m){
+  if(m == NULL){
+    return ERROR_MUSIC;
+  }
+
+  return m->state;
+}
+
+int music_getIndex(Music *m){
+  if(m== NULL){
+    return -1;
+  }
+
+  return m->index;
+}
+
+Status music_setId (Music * m, const long id){
+  if(m == NULL || id < 0){
+    return ERROR;
+  }
+
+  m->id = id;
+
+  return OK;
+}
+
+Status music_setTitle (Music * m, const char * title){
+  if(m == NULL || strlen(title) > STR_LENGTH){
+    return ERROR;
+  }
+  
+  strcpy(m->title, title);
+
+  return OK;
+}
+
+Status music_setArtist (Music * m, const char * artist){
+  if(m == NULL || strlen(artist) > STR_LENGTH){
+    return ERROR;
+  }
+
+  strcpy(m->artist, artist);
+
+  return OK;
+}
+
+
+Status music_setDuration (Music * m, const unsigned short duration){
+  if(m == NULL|| duration <= 0){
+    return ERROR;
+  }
+
+  m->duration = duration;
+
+  return OK;
+}
+  
+Status music_setState (Music * m, const State state){
+  if(m == NULL){
+    return ERROR;
+  }
+
+  m->state = state;
+
+  return OK;
+}
+
+Status music_setIndex(Music *m, int index){
+  if(m == NULL){
+    return ERROR;
+  }
+
+  m->index = index;
+
+  return OK;
+}
+
+
+int music_cmp (const void * m1, const void * m2){
+  if (m1 == NULL || m2 == NULL){
+    return -1;
+  }
+  long id1, id2;
+
+  id1 = music_getId(m1);
+  id2 = music_getId(m2);
+
+  if(id1 == id2){
+
+    if(strcmp(music_getTitle(m1),music_getTitle(m2)) == 0){
+
+        if(strcmp(music_getArtist(m1),music_getArtist(m2)) == 0){
+
+          return 0;
+
+        }else{
+          return 1;
+        }
+
+    }else{
+      return 1;
+    }
+
+  } else{
+    return 1;
+  }
+}
+
+Status music_cmp_artist(const void *m1, const void *m2, int *res){
+int i=0;
+
+if (m1 == NULL || m2 == NULL){
+    return ERROR;
+  }
+  char n1[STR_LENGTH];
+  char n2[STR_LENGTH];
+
+  
+  strcpy(n1, music_getArtist(m1));
+  strcpy(n2, music_getArtist(m2));
+  if(strcmp(n1, n2) == 0){
+    return ERROR;
+  }
+
+
+do{
+  if(n1[i] > n2[i]){
+    *res = 1;
+    return OK;
+  }
+  if(n1[i] < n2[i]){
+    *res = -1;
+    return OK;
+  }
+  i++;
+  }while(n1[i] == n2[i]);
+
+  *res = 0;
+  return OK;
+  
+}
+
+void * music_copy (const void * src){
+  Music *trc = NULL;
+  if(src == NULL){
+    return NULL;
+  }
+
+  if(!(trc = (Music*)malloc(1*sizeof(Music)))){
+    return NULL;
+  }
+
+  trc->id = music_getId(src);
+  strcpy(trc->artist,music_getArtist(src));
+  strcpy(trc->title,music_getTitle(src));
+  trc->duration = music_getDuration(src);
+  trc->state = music_getState(src);
+
+  return trc;
+}
+
+int music_plain_print (FILE * pf, const void * m){
+  int counter =0;
+  if(pf == NULL || m == NULL){
+    return -1;
+  }
+
+  counter = fprintf(pf, "[%li, %s, %s, %hd, %d]", music_getId(m), music_getTitle(m), music_getArtist(m), music_getDuration(m), music_getState(m));
+
+  return counter;
+}
+
+int music_plain_print_p2_e3 (FILE * pf, const void * m){
+  int counter =0;
+  if(pf == NULL || m == NULL){
+    return -1;
+  }
+
+  counter = fprintf(pf, "[%li, %s, %s, %hd, %d, %i]", music_getId(m), music_getTitle(m), music_getArtist(m), music_getDuration(m), music_getState(m), music_getIndex((Music*)m));
+
+  return counter;
+}
+
