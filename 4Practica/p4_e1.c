@@ -264,14 +264,13 @@ int main(int argc, char const *argv[]) {
     time = clock() - time;
     fprintf(f_out, " - %ld ticks (%f seconds)\n", (long)time, ((float) time) / CLOCKS_PER_SEC);
 
-/*EXERCISE 2 - TREE_REMOVE
     fprintf(f_out, "Removing element in tree: ");
     time = clock();
     fprintf(f_out, "%s", tree_remove(t, m) == OK ? "OK" : "ERR");
     time = clock() - time;
     fprintf(f_out, " - %ld ticks (%f seconds)\n", (long)time, ((float) time) / CLOCKS_PER_SEC);
     fprintf(f_out, "Tree size: %ld\nTree depth: %d\n", tree_size(t), tree_depth(t));
-*/
+
   } else {
     fprintf(f_out, "Element NOT found");
     time = clock() - time;
@@ -289,9 +288,9 @@ int main(int argc, char const *argv[]) {
  * RESPUESTA:
  *
  * Al insertar elementos en un árbol binario de búsqueda o binary search tree (BST) secuencialmente
- * y ordenada en el modo sorted, el árbol empeora, transformándose en una
- * estructura lineal (similar a una lista enlazada, sesgada hacia la derecha o izquierda). 
- * Debido a esto, se pierde la propiedad que optimiza el árbol; la profundidad del árbol
- * pasa a ser N (en vez de log(N) que tendría si estuviera balanceado), provocando que 
- * los tiempos de inserción y de búsqueda empeoren notablemente, pasando de O(log N) a O(N).
+ * y de forma ordenada con el modo sorted, el árbol empeora, transformándose en uno lineal 
+ * (parecido a una lista enlazada, pero con preferencia hacia la derecha o izquierda). 
+ * Debido a esto, el árbol deja de estar optimizado y la profundidad del árbol
+ * pasa a ser N (en vez de log(N) si estuviera balanceado), provocando que 
+ * los tiempos de inserción y de búsqueda empeoren, pasando de O(log N) a O(N).
  */

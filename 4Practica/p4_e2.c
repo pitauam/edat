@@ -1,72 +1,296 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include "bstree.h"
-#include "music.h"
 #include "radio.h"
+#include "types.h"
 
-int main(int argc, char **argv) {
-  BSTree *tree = NULL;
-  Radio *r = NULL;
-  Music *m = NULL;
-  Music *to_remove = NULL;
-  long id_to_remove;
-  FILE *f = NULL;
-  int i, n_songs;
+/* START Private methods */
+int mainCleanUp (int ret_value, Radio *r, FILE *pf) {
+  radio_free(r);   
+  fclose(pf);
+  exit(ret_value);
+}
 
-  if (argc < 3) {
-      fprintf(stderr, "Uso: %s <fichero_musica> <id_a_eliminar>\n", argv[0]);
-      return EXIT_FAILURE;
+/*adds '.txt' at the end of the filename given*/
+Status concatenateTxt(const char *arg, char *filename, int size) {
+  int len;
+
+  if (!arg || !filename || size == 0){
+    return ERROR;
   }
 
-  id_to_remove = atol(argv[2]);
+  len = strlen(arg);
+  if (len >= 4 && strcmp(arg + len - 4, ".txt") == 0)
+  {
+    if (len + 1 > size) 
+    {
+      return ERROR;
+    }
 
-  
-  r = radio_init();
-  f = fopen(argv[1], "r");
-  if (!f || !r) {
-      fprintf(stderr, "Error al abrir el fichero o inicializar radio.\n");
-      return EXIT_FAILURE;
+    strcpy(filename, arg);
+    return OK;
   }
-  radio_readFromFile(f, r);
-  fclose(f);
 
-  tree = tree_init(music_plain_print, music_cmp_id);
-  if (!tree) {
-    radio_free(r);
+  if (len + 5 > size)
+  {
+    return ERROR;
+  }
+
+  strcpy(filename, arg);
+  strcat(filename, ".txt");
+
+  return OK;
+}
+
+Music **radio_getSongsArray(Radio *r) {
+  Music **songs = NULL;
+  int i, n;
+
+  if (!r) {
+    return NULL;
+  }
+
+  n = radio_getnumber(r);
+  if (n <= 0) {
+    return NULL;
+  }
+
+  songs = malloc(sizeof(Music *) * n);
+  if (!songs) {
+    return NULL;
+  }
+
+  for (i = 0; i < n; i++) {
+    songs[i] = radio_getMusic(r, i);
+    if (!songs[i]) {
+      free(songs);
+      return NULL;
+    }
+  }
+
+  return songs;
+}
+
+int findMusicIndexById(Music **songs, int n, long music_id) {
+  int i;
+
+  if (!songs || n <= 0) {
+    return -1;
+  }
+
+  for (i = 0; i < n; i++) {
+    if (music_getId(songs[i]) == music_id) {
+      return i;
+    }
+  }
+
+  return -1;
+}
+
+void loadBalancedTree_rec(Music **sorted_data, BSTree *t, int first, int last) {
+  int middle = (first + last) / 2;
+  Music *m;
+
+  if (first <= last) {
+    m = *(&(sorted_data[0]) + middle);
+    if (tree_insert(t, m) == ERROR) {
+      fprintf(stdout, "Music ");
+      music_plain_print(stdout, m);
+      fprintf(stdout, " not inserted!\n");
+    }
+
+    loadBalancedTree_rec(sorted_data, t, first, middle - 1);
+    loadBalancedTree_rec(sorted_data, t, middle + 1, last);
+  }
+}
+
+BSTree *loadBalancedTree(Music **data, int n) {
+  BSTree *t;
+
+  if (!data || (n <= 0)) {
+    return NULL;
+  }
+
+  if (!(t = tree_init(music_plain_print, music_cmp))) { 
+    return NULL;
+  }
+
+  loadBalancedTree_rec(data, t, 0, n - 1);
+
+  return t;
+}
+
+BSTree *loadUnbalancedTree(Music **data, int n) {
+  BSTree *t;
+  Music *m;
+  int i;
+
+  if (!data || (n <= 0)) {
+    return NULL;
+  }
+
+  if (!(t = tree_init(music_plain_print, music_cmp))) {
+    return NULL;
+  }
+
+  for (i = 0; i < n; i++) {
+    m = data[i];
+    if (tree_insert(t, m) == ERROR) {
+      fprintf(stdout, "Music ");
+      music_plain_print(stdout, m);
+      fprintf(stdout, " not inserted!\n");
+    }
+  }
+
+  return t;
+}
+
+int qsort_fun(const void *e1, const void *e2){
+  Music **pm1, **pm2;
+
+  pm1 = (Music **) e1;
+  pm2 = (Music **) e2;
+
+  return music_cmp(*pm1, *pm2);
+}
+/* END Private methods */
+
+
+int main(int argc, char const *argv[]) {
+	FILE *f_in = NULL, *f_out = NULL;
+	BSTree *t = NULL;
+	Music **songs=NULL, *m;
+	const char *mode;
+	char input_file[256];
+	int n, index=0;
+	long	music_id;
+	time_t time;
+	Radio *r = NULL;
+
+	if (argc != 4) {
+		printf("Usage: %s music_file music_id mode[normal|sorted]\n", argv[0]);
+		exit(EXIT_FAILURE);
+	}
+
+	mode = argv[3];
+	if (strcmp(mode, "normal") && strcmp(mode, "sorted")) {
+		printf("Incorrect mode: %s\n", mode);
+		exit(EXIT_FAILURE);
+	}
+
+  if (concatenateTxt(argv[1], input_file, sizeof(input_file)) == ERROR)
+  {
     return EXIT_FAILURE;
   }
 
-    
-  n_songs = radio_getnumber(r);
-  for (i = 0; i < n_songs; i++) {
-      m = radio_getMusic(r, i);
-      tree_insert(tree, m);
+  f_in = fopen(input_file, "r");
+  if (!f_in)
+  {
+    return (EXIT_FAILURE);
   }
 
-  printf("Número de nodos inicial: %ld\n", tree_size(tree));
-  printf("Recorrido InOrder inicial:\n");
-  tree_inOrder(stdout, tree);
+	f_out = stdout;
 
-  printf("\nEliminando canción con ID: %ld...\n", id_to_remove);
+  r = radio_init();
+  if (!r) mainCleanUp (EXIT_FAILURE, r, f_in);
     
-  to_remove = music_init();
-  music_setId(to_remove, id_to_remove);
-    
-  if (tree_remove(tree, to_remove) == OK) {
-    printf("Canción eliminada correctamente.\n");
+    // lee el fichero
+  if  (radio_readFromFile(f_in, r) == ERROR) {
+    fprintf(stdout, "Not file or File format incorrect\n");
+    mainCleanUp (EXIT_FAILURE, r, f_in);
+  }
+	
+	music_id = atoi(argv[2]);
+	/* REPLACE BY YOUR OWN IMPLEMENTED FUNCTIONS */
+	songs = radio_getSongsArray(r);
+	n = radio_getNumberOfMusic(r);
+	if (!songs) {
+		mainCleanUp (EXIT_FAILURE, r, f_in);
+	}
+	
+	index = findMusicIndexById(songs, n, music_id);
+	if (index < 0) {
+		free(songs);
+		printf("Music with id %ld was not found\n", music_id);
+		mainCleanUp (EXIT_FAILURE, r, f_in);
+	}
+	m = songs[index];
+	if (m == NULL) {
+		free(songs);
+		printf("Error when initialising music with id: %ld\n", music_id);
+		mainCleanUp (EXIT_FAILURE, r, f_in);
+	}
+	/* END REPLACE */
+
+	if (!strcmp(mode, "normal")) {
+		fprintf(f_out, "Mode: normal\n");
+		time = clock();
+		t = loadUnbalancedTree(songs, n);
+		time = clock() - time;
+	}
+	else {
+		qsort(songs, n, sizeof(Music *), qsort_fun);
+		fprintf(f_out, "Mode: sorted\n");
+		time = clock();
+		t = loadBalancedTree(songs, n);
+		time = clock() - time;
+	}
+
+  if (!t) {
+    mainCleanUp (EXIT_FAILURE, r, f_in);
+  }
+
+  fprintf(f_out, "Tree building time: %ld ticks (%f seconds)\n", (long)time, ((float) time) / CLOCKS_PER_SEC);
+  fprintf(f_out, "Tree size: %ld\nTree depth: %d\n", tree_size(t), tree_depth(t));
+
+  fprintf(f_out, "Min element in tree: ");
+  time = clock();
+  music_plain_print_p2_e3(f_out, tree_find_min(t));
+  time = clock() - time;
+  fprintf(f_out, " - %ld ticks (%f seconds)\n", (long)time, ((float) time) / CLOCKS_PER_SEC);
+
+  fprintf(f_out, "Max element in tree: ");
+  time = clock();
+  music_plain_print_p2_e3(f_out, tree_find_max(t));
+  time = clock() - time;
+  fprintf(f_out, " - %ld ticks (%f seconds)\n", (long)time, ((float) time) / CLOCKS_PER_SEC);
+
+  time = clock();
+  if (tree_contains(t, m) == TRUE) {
+    fprintf(f_out, "Element found");
+    time = clock() - time;
+    fprintf(f_out, " - %ld ticks (%f seconds)\n", (long)time, ((float) time) / CLOCKS_PER_SEC);
+
+    fprintf(f_out, "Removing element in tree: ");
+    time = clock();
+    fprintf(f_out, "%s", tree_remove(t, m) == OK ? "OK" : "ERR");
+    time = clock() - time;
+    fprintf(f_out, " - %ld ticks (%f seconds)\n", (long)time, ((float) time) / CLOCKS_PER_SEC);
+    fprintf(f_out, "Tree size: %ld\nTree depth: %d\n", tree_size(t), tree_depth(t));
+
   } else {
-    printf("Error: No se encontró la canción con ID %ld.\n", id_to_remove);
+    fprintf(f_out, "Element NOT found");
+    time = clock() - time;
+    fprintf(f_out, " - %ld ticks (%f seconds)\n", (long)time, ((float) time) / CLOCKS_PER_SEC);
   }
-
-  printf("\nNúmero de nodos final: %ld\n", tree_size(tree));
-  printf("Recorrido InOrder final:\n");
-  tree_inOrder(stdout, tree);
-
-  music_free(to_remove);
-  tree_destroy(tree);
-  radio_free(r);
-
-    return 0;
+  
+  tree_destroy(t);
+  free(songs);
+  mainCleanUp (EXIT_SUCCESS, r, f_in);
 }
+
+/*
+ * P1 ¿Por qué es así?, ¿hay alguna propiedad del árbol que permita explicar este comportamiento? Responde a estas preguntas en un comentario al final de p4_e1.c
+
+ * RESPUESTA:
+ *
+ * Al insertar elementos en un árbol binario de búsqueda o binary search tree (BST) secuencialmente
+ * y de forma ordenada con el modo sorted, el árbol empeora, transformándose en uno lineal 
+ * (parecido a una lista enlazada, pero con preferencia hacia la derecha o izquierda). 
+ * Debido a esto, el árbol deja de estar optimizado y la profundidad del árbol
+ * pasa a ser N (en vez de log(N) si estuviera balanceado), provocando que 
+ * los tiempos de inserción y de búsqueda empeoren, pasando de O(log N) a O(N).
+ */

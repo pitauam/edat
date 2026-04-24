@@ -23,6 +23,7 @@ struct _BSTree {
 void _tree_rangeSearch_rec(BSTNode *node, void *min, void *max, List *list, P_ele_cmp cmp);
 int _tree_countLongSongs_rec(BSTNode *node, int min_duration);
 BSTNode *_bst_remove_rec(BSTNode *pn, const void *elem, P_ele_cmp cmp_elem);
+
 BSTNode *_bst_node_new() {
   BSTNode *pn = NULL;
 
@@ -333,37 +334,48 @@ Status tree_remove(BSTree *tree, const void *elem) {
 }
 
 BSTNode *_bst_remove_rec(BSTNode *pn, const void *elem, P_ele_cmp cmp_elem) {
-  BSTNode *temp;
+  BSTNode *temp_node;
+  void *min_info;
 
-  if (pn == NULL) {
-      return NULL;
+  if (pn == NULL){
+    return NULL;
   }
 
-  if (cmp_elem(elem, pn->info) < 0) {
-
+  if (cmp_elem(elem, pn->info) < 0)
+  {
     pn->left = _bst_remove_rec(pn->left, elem, cmp_elem);
-  } else if (cmp_elem(elem, pn->info) > 0) {
-
+  } 
+  else if (cmp_elem(elem, pn->info) > 0)
+  {
     pn->right = _bst_remove_rec(pn->right, elem, cmp_elem);
-  } else {
-      
-    if (pn->left == NULL && pn->right == NULL) {
-      free(pn);
+  } 
+  else {
+
+    if (pn->left == NULL && pn->right == NULL)
+    {
+      _bst_node_free(pn);
       return NULL;
     }
-    if (pn->left == NULL) {
-      temp = pn->right;
-      free(pn);
-      return temp;
-  } else if (pn->right == NULL) {
-      temp = pn->left;
-      free(pn);
-      return temp;
-  }
-    temp = _bst_find_min_rec(pn->right);
-    pn->info = temp->info;  
-    pn->right = _bst_remove_rec(pn->right, temp->info, cmp_elem);
+    
+    if (pn->left == NULL)
+    {
+      temp_node = pn->right;
+      _bst_node_free(pn);
+      return temp_node;
+    }
+    else if (pn->right == NULL)
+    {
+      temp_node = pn->left;
+      _bst_node_free(pn);
+      return temp_node;
+    }
+    
+    min_info = _bst_find_min_rec(pn->right);
+    
+    pn->info = min_info;  
+    
+    pn->right = _bst_remove_rec(pn->right, min_info, cmp_elem);
   }
 
-    return pn;
+  return pn;
 }

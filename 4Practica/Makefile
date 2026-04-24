@@ -71,19 +71,44 @@ run:
 	@echo ">>>>>>Running p4_e1 in sorted mode"
 	./p4_e1 data_music_10 8 sorted
 
-#	@echo ">>>>>>Running p4_e2"
-#	./p4_e2 data_music_10.txt 3 7
+
+
+	@echo ">>>>>>Running p4_e2"
+	./p4_e2 data_music_10.txt 3 7
+
+# no longer needed vvv
+#	@echo ">>>>>>Running p4_e2 in normal mode"
+#	./p4_e2 data_music_10 8 normal
+
+#	@echo ">>>>>>Running p4_e2 in sorted mode"
+#	./p4_e2 data_music_10 8 sorted
+
+
 
 #	@echo ">>>>>>Running p4_e3"
 #	./p4_e3 data_music_10.txt 300
 
 #valgrind
 runv:
-	@echo ">>>>>>Running p4_e1 with valgrind"
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p4_e1 data_music_10.txt 8 normal
+	@echo ">>>>>>Running p4_e1 in normal mode with valgrind"
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p4_e1 data_music_10 8 normal
 
-#	@echo ">>>>>>Running p4_e2 with valgrind"
-#	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p4_e2 data_music_10.txt 3 7
+	@echo ">>>>>>Running p4_e1 in sorted mode with valgrind"
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p4_e1 data_music_10 8 sorted
+
+
+
+	@echo ">>>>>>Running p4_e2"
+	./p4_e2 data_music_10.txt 3 7
+
+# no longer needed vvv
+#	@echo ">>>>>>Running p4_e2 in normal mode with valgrind"
+#	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p4_e2 data_music_10 8 normal
+	
+#	@echo ">>>>>>Running p4_e2 in sorted mode with valgrind"
+#	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p4_e2 data_music_10 8 sorted
+
+
 
 #	@echo ">>>>>>Running p4_e3 with valgrind"
 #	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p4_e3 data_music_10.txt 300
