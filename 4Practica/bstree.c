@@ -322,55 +322,47 @@ Status tree_insert(BSTree *tree, const void *elem) {
 }
 
 Status tree_remove(BSTree *tree, const void *elem) {
-    if (tree == NULL || elem == NULL) {
-        return ERROR;
-    }
+  if (tree == NULL || elem == NULL) {
+    return ERROR;
+  }
 
-    /* Actualizamos la raíz del árbol tras la eliminación recursiva */
-    tree->root = _bst_remove_rec(tree->root, elem, tree->cmp_ele);
+  tree->root = _bst_remove_rec(tree->root, elem, tree->cmp_ele);
 
-    return OK;
+  return OK;
 }
 
 BSTNode *_bst_remove_rec(BSTNode *pn, const void *elem, P_ele_cmp cmp_elem) {
-    BSTNode *temp;
+  BSTNode *temp;
 
-    if (pn == NULL) {
-        return NULL;
+  if (pn == NULL) {
+      return NULL;
+  }
+
+  if (cmp_elem(elem, pn->info) < 0) {
+
+    pn->left = _bst_remove_rec(pn->left, elem, cmp_elem);
+  } else if (cmp_elem(elem, pn->info) > 0) {
+
+    pn->right = _bst_remove_rec(pn->right, elem, cmp_elem);
+  } else {
+      
+    if (pn->left == NULL && pn->right == NULL) {
+      free(pn);
+      return NULL;
     }
-
-    /* Buscar el nodo */
-    if (cmp_elem(elem, pn->info) < 0) {
-        pn->left = _bst_remove_rec(pn->left, elem, cmp_elem);
-    } else if (cmp_elem(elem, pn->info) > 0) {
-        pn->right = _bst_remove_rec(pn->right, elem, cmp_elem);
-    } else {
-        /* Nodo encontrado */
-
-        /* Caso 1: sin hijos */
-        if (pn->left == NULL && pn->right == NULL) {
-            free(pn);
-            return NULL;
-        }
-
-        /* Caso 2: un hijo */
-        if (pn->left == NULL) {
-            temp = pn->right;
-            free(pn);
-            return temp;
-        } else if (pn->right == NULL) {
-            temp = pn->left;
-            free(pn);
-            return temp;
-        }
-
-        /* Caso 3: dos hijos */
-        temp = _bst_find_min_rec(pn->right);
-        pn->info = temp->info;  // copiar dato
-
-        /* eliminar el sucesor */
-        pn->right = _bst_remove_rec(pn->right, temp->info, cmp_elem);
-    }
+    if (pn->left == NULL) {
+      temp = pn->right;
+      free(pn);
+      return temp;
+  } else if (pn->right == NULL) {
+      temp = pn->left;
+      free(pn);
+      return temp;
+  }
+    temp = _bst_find_min_rec(pn->right);
+    pn->info = temp->info;  
+    pn->right = _bst_remove_rec(pn->right, temp->info, cmp_elem);
+  }
 
     return pn;
 }
