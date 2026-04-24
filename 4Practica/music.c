@@ -378,3 +378,21 @@ int music_plain_print_p2_e3 (FILE * pf, const void * m){
   return counter;
 }
 
+int music_cmp_id(const void * m1, const void * m2) {
+    long id1, id2;
+
+    if (m1 == NULL || m2 == NULL) {
+        return 0; 
+    }
+
+    id1 = music_getId(m1);
+    id2 = music_getId(m2);
+
+    if (id1 < id2) {
+        return -1;
+    } else if (id1 > id2) {
+        return 1;
+    } else {
+        return 0; 
+    }
+}
