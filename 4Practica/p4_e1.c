@@ -14,6 +14,37 @@ int mainCleanUp (int ret_value, Radio *r, FILE *pf) {
   exit(ret_value);
 }
 
+/*adds '.txt' at the end of the filename given*/
+Status concatenateTxt(const char *arg, char *filename, int size) {
+  int len;
+
+  if (!arg || !filename || size == 0){
+    return ERROR;
+  }
+
+  len = strlen(arg);
+  if (len >= 4 && strcmp(arg + len - 4, ".txt") == 0)
+  {
+    if (len + 1 > size) 
+    {
+      return ERROR;
+    }
+
+    strcpy(filename, arg);
+    return OK;
+  }
+
+  if (len + 5 > size)
+  {
+    return ERROR;
+  }
+
+  strcpy(filename, arg);
+  strcat(filename, ".txt");
+
+  return OK;
+}
+
 Music **radio_getSongsArray(Radio *r) {
   Music **songs = NULL;
   int i, n;
@@ -133,6 +164,7 @@ int main(int argc, char const *argv[]) {
 	BSTree *t = NULL;
 	Music **songs=NULL, *m;
 	const char *mode;
+	char input_file[256];
 	int n, index=0;
 	long	music_id;
 	time_t time;
@@ -149,20 +181,27 @@ int main(int argc, char const *argv[]) {
 		exit(EXIT_FAILURE);
 	}
 
-    f_in = fopen(argv[1], "r");
-    if (!f_in) {
-      return (EXIT_FAILURE);
-    }
+  if (concatenateTxt(argv[1], input_file, sizeof(input_file)) == ERROR)
+  {
+    return EXIT_FAILURE;
+  }
+
+  f_in = fopen(input_file, "r");
+  if (!f_in)
+  {
+    return (EXIT_FAILURE);
+  }
+
 	f_out = stdout;
 
-    r = radio_init();
-    if (!r) mainCleanUp (EXIT_FAILURE, r, f_in);
+  r = radio_init();
+  if (!r) mainCleanUp (EXIT_FAILURE, r, f_in);
     
     // lee el fichero
-    if  (radio_readFromFile(f_in, r) == ERROR) {
-      fprintf(stdout, "Not file or File format incorrect\n");
-      mainCleanUp (EXIT_FAILURE, r, f_in);
-    }
+  if  (radio_readFromFile(f_in, r) == ERROR) {
+    fprintf(stdout, "Not file or File format incorrect\n");
+    mainCleanUp (EXIT_FAILURE, r, f_in);
+  }
 	
 	music_id = atoi(argv[2]);
 	/* REPLACE BY YOUR OWN IMPLEMENTED FUNCTIONS */
@@ -209,13 +248,13 @@ int main(int argc, char const *argv[]) {
 
   fprintf(f_out, "Min element in tree: ");
   time = clock();
-  music_plain_print(f_out, tree_find_min(t));
+  music_plain_print_p2_e3(f_out, tree_find_min(t));
   time = clock() - time;
   fprintf(f_out, " - %ld ticks (%f seconds)\n", (long)time, ((float) time) / CLOCKS_PER_SEC);
 
   fprintf(f_out, "Max element in tree: ");
   time = clock();
-  music_plain_print(f_out, tree_find_max(t));
+  music_plain_print_p2_e3(f_out, tree_find_max(t));
   time = clock() - time;
   fprintf(f_out, " - %ld ticks (%f seconds)\n", (long)time, ((float) time) / CLOCKS_PER_SEC);
 
