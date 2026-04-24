@@ -65,8 +65,11 @@ clean:
 
 #without valgrind
 run:
-	@echo ">>>>>>Running p4_e1"
-	./p4_e1 data_music_10.txt 8 normal
+	@echo ">>>>>>Running p4_e1 in normal mode"
+	./p4_e1 data_music_10 8 normal
+
+	@echo ">>>>>>Running p4_e1 in sorted mode"
+	./p4_e1 data_music_10 8 sorted
 
 #	@echo ">>>>>>Running p4_e2"
 #	./p4_e2 data_music_10.txt 3 7

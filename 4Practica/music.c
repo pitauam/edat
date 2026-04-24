@@ -274,33 +274,34 @@ Status music_setIndex(Music *m, int index){
 
 
 int music_cmp (const void * m1, const void * m2){
+  long id1, id2;
+  int cmp;
+
   if (m1 == NULL || m2 == NULL){
     return -1;
   }
-  long id1, id2;
 
   id1 = music_getId(m1);
   id2 = music_getId(m2);
 
-  if(id1 == id2){
+  if (id1 < id2)
+  {
+    return -1;
+  }
 
-    if(strcmp(music_getTitle(m1),music_getTitle(m2)) == 0){
-
-        if(strcmp(music_getArtist(m1),music_getArtist(m2)) == 0){
-
-          return 0;
-
-        }else{
-          return 1;
-        }
-
-    }else{
-      return 1;
-    }
-
-  } else{
+  if (id1 > id2)
+  {
     return 1;
   }
+
+  cmp = strcmp(music_getTitle(m1), music_getTitle(m2));
+  
+  if (cmp != 0)
+  {
+    return cmp;
+  }
+
+  return strcmp(music_getArtist(m1), music_getArtist(m2));
 }
 
 Status music_cmp_artist(const void *m1, const void *m2, int *res){
@@ -376,6 +377,7 @@ int music_plain_print_p2_e3 (FILE * pf, const void * m){
   counter = fprintf(pf, "[%li, %s, %s, %hd, %d, %i]", music_getId(m), music_getTitle(m), music_getArtist(m), music_getDuration(m), music_getState(m), music_getIndex((Music*)m));
 
   return counter;
+<<<<<<< HEAD
 }
 
 int music_cmp_id(const void * m1, const void * m2) {
@@ -395,4 +397,6 @@ int music_cmp_id(const void * m1, const void * m2) {
   } else {
    return 0; 
   }
+=======
+>>>>>>> 2b439c43f9ff422830a0be19f97bec768cc63436
 }
