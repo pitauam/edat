@@ -185,6 +185,4 @@ List *tree_rangeSearch(const BSTree *tree, void *min, void *max);
 
 int tree_countLongSongs(const BSTree *tree, int min_duration);
 
-BSTNode *_bst_remove_rec(BSTNode *pn, const void *elem, P_ele_cmp cmp_elem)
-
 #endif

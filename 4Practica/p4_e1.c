@@ -282,3 +282,16 @@ int main(int argc, char const *argv[]) {
   free(songs);
   mainCleanUp (EXIT_SUCCESS, r, f_in);
 }
+
+/*
+ * P1 ¿Por qué es así?, ¿hay alguna propiedad del árbol que permita explicar este comportamiento? Responde a estas preguntas en un comentario al final de p4_e1.c
+
+ * RESPUESTA:
+ *
+ * Al insertar elementos en un árbol binario de búsqueda o binary search tree (BST) secuencialmente
+ * y ordenada en el modo sorted, el árbol empeora, transformándose en una
+ * estructura lineal (similar a una lista enlazada, sesgada hacia la derecha o izquierda). 
+ * Debido a esto, se pierde la propiedad que optimiza el árbol; la profundidad del árbol
+ * pasa a ser N (en vez de log(N) que tendría si estuviera balanceado), provocando que 
+ * los tiempos de inserción y de búsqueda empeoren notablemente, pasando de O(log N) a O(N).
+ */
