@@ -129,6 +129,87 @@ int _bst_postOrder_rec(BSTNode *pn, FILE *pf, P_ele_print print_ele) {
   return count;
 }
 
+
+void *_bst_find_min_rec(BSTNode *pn) {
+  if (!pn){
+    return NULL;
+  } 
+
+  if (!pn->left) 
+  {
+    return pn->info;
+  }
+
+  return _bst_find_min_rec(pn->left);
+}
+
+void *_bst_find_max_rec(BSTNode *pn) {
+  if (!pn) {
+    return NULL;
+  }
+
+  if (!pn->right) 
+  {
+    return pn->info;
+  }
+
+  return _bst_find_max_rec(pn->right);
+}
+
+Bool _bst_contains_rec(BSTNode *pn, const void *elem, P_ele_cmp cmp_ele) {
+  int cmp;
+
+  if (!pn) return FALSE;
+  
+  cmp = cmp_ele(elem, pn->info);
+  if (cmp == 0) 
+  {
+    return TRUE;
+  } 
+  else if (cmp < 0) 
+  {
+    return _bst_contains_rec(pn->left, elem, cmp_ele);
+  } 
+  else 
+  {
+    return _bst_contains_rec(pn->right, elem, cmp_ele);
+  }
+}
+
+BSTNode *_bst_insert_rec(BSTNode *pn, const void *elem, P_ele_cmp cmp_ele, Status *st) {
+  int cmp;
+
+  if (!pn) 
+  {
+    BSTNode *new_node = _bst_node_new();
+    if (!new_node) 
+    {
+      *st = ERROR;
+      return NULL;
+    }
+    new_node->info = (void *)elem;
+    *st = OK;
+    return new_node;
+  }
+  
+  cmp = cmp_ele(elem, pn->info);
+
+  if (cmp < 0) 
+  {
+    pn->left = _bst_insert_rec(pn->left, elem, cmp_ele, st);
+  } 
+  else if (cmp > 0)
+  {
+    pn->right = _bst_insert_rec(pn->right, elem, cmp_ele, st);
+  }
+  else 
+  {
+    *st = OK; 
+  }
+    
+  return pn;
+}
+
 /*** BSTree TAD functions ***/
 BSTree *tree_init(P_ele_print print_ele, P_ele_cmp cmp_ele) {
   BSTree *tree;
@@ -208,3 +289,34 @@ int tree_postOrder(FILE *f, const BSTree *tree) {
 }
 
 /**** TODO: find_min, find_max, insert, contains, remove ****/
+
+void *tree_find_min(BSTree *tree) {
+  if (!tree || !tree->root){
+    return NULL;
+  }
+  return _bst_find_min_rec(tree->root);
+}
+
+void *tree_find_max(BSTree *tree) {
+  if (!tree || !tree->root){
+    return NULL;
+  }
+  return _bst_find_max_rec(tree->root);
+}
+
+Bool tree_contains(BSTree *tree, const void *elem) {
+  if (!tree || !elem){
+    return FALSE;
+  }
+  return _bst_contains_rec(tree->root, elem, tree->cmp_ele);
+}
+
+Status tree_insert(BSTree *tree, const void *elem) {
+  Status st = ERROR;
+  if (!tree || !elem){
+    return ERROR;
+  }
+    
+  tree->root = _bst_insert_rec(tree->root, elem, tree->cmp_ele, &st);
+  return st;
+}
