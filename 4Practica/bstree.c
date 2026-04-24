@@ -379,3 +379,43 @@ BSTNode *_bst_remove_rec(BSTNode *pn, const void *elem, P_ele_cmp cmp_elem) {
 
   return pn;
 }
+
+void _tree_rangeSearch_rec(BSTNode *node, void *min, void *max, List *list, P_ele_cmp cmp) {
+  if (node == NULL){
+    return;
+  }
+
+  if (cmp(node->info, min) > 0)
+  {
+    _tree_rangeSearch_rec(node->left, min, max, list, cmp);
+  }
+
+  if (cmp(node->info, min) >= 0 && cmp(node->info, max) <= 0)
+  {
+    list_pushBack(list, node->info); 
+  }
+
+  if (cmp(node->info, max) < 0)
+  {
+    _tree_rangeSearch_rec(node->right, min, max, list, cmp);
+  }
+
+}
+
+List *tree_rangeSearch(const BSTree *tree, void *min, void *max) {
+  List *list = NULL;
+
+  if (!tree || !tree->root || !min || !max){
+    return NULL;
+  }
+
+  list = list_new();
+
+  if (list == NULL)
+  {
+    return NULL;
+  }
+
+  _tree_rangeSearch_rec(tree->root, min, max, list, tree->cmp_ele);
+  return list;
+}

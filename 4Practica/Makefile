@@ -2,11 +2,12 @@
 CC=gcc
 CFLAGS= -g -Wall -pedantic
 
-EJS = p4_e1
+#EJS = p4_e1
 #EJS = p4_e2
 #EJS = p4_e3
 
-#EJS = p4_e1 p4_e2 p4_e3
+EJS = p4_e1 p4_e2 
+#p4_e3
 EXECUTABLES = $(EJS)
 
 ########################################################

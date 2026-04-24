@@ -284,7 +284,7 @@ int main(int argc, char const *argv[]) {
 
 /*
  * P1 ¿Por qué es así?, ¿hay alguna propiedad del árbol que permita explicar este comportamiento? Responde a estas preguntas en un comentario al final de p4_e1.c
-
+ *
  * RESPUESTA:
  *
  * Al insertar elementos en un árbol binario de búsqueda o binary search tree (BST) secuencialmente

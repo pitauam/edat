@@ -1,296 +1,145 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <time.h>
-
-#include "bstree.h"
 #include "radio.h"
-#include "types.h"
+#include "bstree.h"
+#include "music.h"
+#include "list.h"
 
-/* START Private methods */
-int mainCleanUp (int ret_value, Radio *r, FILE *pf) {
-  radio_free(r);   
-  fclose(pf);
-  exit(ret_value);
-}
+int main(int argc, char **argv)
+{
+  Radio *r = NULL;
+  FILE *pf = NULL;
+  BSTree *tree = NULL;
+  List *list = NULL;
+  Music *min_music = NULL;
+  Music *max_music = NULL;
+  Music *m = NULL;
+  long min_id, max_id;
+  int i, n_songs;
 
-/*adds '.txt' at the end of the filename given*/
-Status concatenateTxt(const char *arg, char *filename, int size) {
-  int len;
-
-  if (!arg || !filename || size == 0){
-    return ERROR;
-  }
-
-  len = strlen(arg);
-  if (len >= 4 && strcmp(arg + len - 4, ".txt") == 0)
+  if (argc < 4)
   {
-    if (len + 1 > size) 
-    {
-      return ERROR;
-    }
-
-    strcpy(filename, arg);
-    return OK;
-  }
-
-  if (len + 5 > size)
-  {
-    return ERROR;
-  }
-
-  strcpy(filename, arg);
-  strcat(filename, ".txt");
-
-  return OK;
-}
-
-Music **radio_getSongsArray(Radio *r) {
-  Music **songs = NULL;
-  int i, n;
-
-  if (!r) {
-    return NULL;
-  }
-
-  n = radio_getnumber(r);
-  if (n <= 0) {
-    return NULL;
-  }
-
-  songs = malloc(sizeof(Music *) * n);
-  if (!songs) {
-    return NULL;
-  }
-
-  for (i = 0; i < n; i++) {
-    songs[i] = radio_getMusic(r, i);
-    if (!songs[i]) {
-      free(songs);
-      return NULL;
-    }
-  }
-
-  return songs;
-}
-
-int findMusicIndexById(Music **songs, int n, long music_id) {
-  int i;
-
-  if (!songs || n <= 0) {
+    printf("You need more than %i arguments, insert text file and the min/max ids.\n", argc);
     return -1;
   }
 
-  for (i = 0; i < n; i++) {
-    if (music_getId(songs[i]) == music_id) {
-      return i;
-    }
-  }
+  min_id = atol(argv[2]);
+  max_id = atol(argv[3]);
 
-  return -1;
-}
-
-void loadBalancedTree_rec(Music **sorted_data, BSTree *t, int first, int last) {
-  int middle = (first + last) / 2;
-  Music *m;
-
-  if (first <= last) {
-    m = *(&(sorted_data[0]) + middle);
-    if (tree_insert(t, m) == ERROR) {
-      fprintf(stdout, "Music ");
-      music_plain_print(stdout, m);
-      fprintf(stdout, " not inserted!\n");
-    }
-
-    loadBalancedTree_rec(sorted_data, t, first, middle - 1);
-    loadBalancedTree_rec(sorted_data, t, middle + 1, last);
-  }
-}
-
-BSTree *loadBalancedTree(Music **data, int n) {
-  BSTree *t;
-
-  if (!data || (n <= 0)) {
-    return NULL;
-  }
-
-  if (!(t = tree_init(music_plain_print, music_cmp))) { 
-    return NULL;
-  }
-
-  loadBalancedTree_rec(data, t, 0, n - 1);
-
-  return t;
-}
-
-BSTree *loadUnbalancedTree(Music **data, int n) {
-  BSTree *t;
-  Music *m;
-  int i;
-
-  if (!data || (n <= 0)) {
-    return NULL;
-  }
-
-  if (!(t = tree_init(music_plain_print, music_cmp))) {
-    return NULL;
-  }
-
-  for (i = 0; i < n; i++) {
-    m = data[i];
-    if (tree_insert(t, m) == ERROR) {
-      fprintf(stdout, "Music ");
-      music_plain_print(stdout, m);
-      fprintf(stdout, " not inserted!\n");
-    }
-  }
-
-  return t;
-}
-
-int qsort_fun(const void *e1, const void *e2){
-  Music **pm1, **pm2;
-
-  pm1 = (Music **) e1;
-  pm2 = (Music **) e2;
-
-  return music_cmp(*pm1, *pm2);
-}
-/* END Private methods */
-
-
-int main(int argc, char const *argv[]) {
-	FILE *f_in = NULL, *f_out = NULL;
-	BSTree *t = NULL;
-	Music **songs=NULL, *m;
-	const char *mode;
-	char input_file[256];
-	int n, index=0;
-	long	music_id;
-	time_t time;
-	Radio *r = NULL;
-
-	if (argc != 4) {
-		printf("Usage: %s music_file music_id mode[normal|sorted]\n", argv[0]);
-		exit(EXIT_FAILURE);
-	}
-
-	mode = argv[3];
-	if (strcmp(mode, "normal") && strcmp(mode, "sorted")) {
-		printf("Incorrect mode: %s\n", mode);
-		exit(EXIT_FAILURE);
-	}
-
-  if (concatenateTxt(argv[1], input_file, sizeof(input_file)) == ERROR)
+  if (!(r = radio_init()))
   {
-    return EXIT_FAILURE;
+    printf("Error while creating radio\n");
+    return -1;
   }
 
-  f_in = fopen(input_file, "r");
-  if (!f_in)
+  if (!(pf = fopen(argv[1], "r")))
   {
-    return (EXIT_FAILURE);
+    printf("Error while opening file\n");
+    radio_free(r);
+    return -1;
   }
 
-	f_out = stdout;
+  if (radio_readFromFile(pf, r) == ERROR)
+  {
+    printf("Error while reading from file\n");
+    radio_free(r);
+    fclose(pf);
 
-  r = radio_init();
-  if (!r) mainCleanUp (EXIT_FAILURE, r, f_in);
-    
-    // lee el fichero
-  if  (radio_readFromFile(f_in, r) == ERROR) {
-    fprintf(stdout, "Not file or File format incorrect\n");
-    mainCleanUp (EXIT_FAILURE, r, f_in);
-  }
-	
-	music_id = atoi(argv[2]);
-	/* REPLACE BY YOUR OWN IMPLEMENTED FUNCTIONS */
-	songs = radio_getSongsArray(r);
-	n = radio_getNumberOfMusic(r);
-	if (!songs) {
-		mainCleanUp (EXIT_FAILURE, r, f_in);
-	}
-	
-	index = findMusicIndexById(songs, n, music_id);
-	if (index < 0) {
-		free(songs);
-		printf("Music with id %ld was not found\n", music_id);
-		mainCleanUp (EXIT_FAILURE, r, f_in);
-	}
-	m = songs[index];
-	if (m == NULL) {
-		free(songs);
-		printf("Error when initialising music with id: %ld\n", music_id);
-		mainCleanUp (EXIT_FAILURE, r, f_in);
-	}
-	/* END REPLACE */
-
-	if (!strcmp(mode, "normal")) {
-		fprintf(f_out, "Mode: normal\n");
-		time = clock();
-		t = loadUnbalancedTree(songs, n);
-		time = clock() - time;
-	}
-	else {
-		qsort(songs, n, sizeof(Music *), qsort_fun);
-		fprintf(f_out, "Mode: sorted\n");
-		time = clock();
-		t = loadBalancedTree(songs, n);
-		time = clock() - time;
-	}
-
-  if (!t) {
-    mainCleanUp (EXIT_FAILURE, r, f_in);
+    return -1;
   }
 
-  fprintf(f_out, "Tree building time: %ld ticks (%f seconds)\n", (long)time, ((float) time) / CLOCKS_PER_SEC);
-  fprintf(f_out, "Tree size: %ld\nTree depth: %d\n", tree_size(t), tree_depth(t));
+  if (!(tree = tree_init(music_plain_print, music_cmp)))
+  {
+    printf("Error while creating tree\n");
+    radio_free(r);
+    fclose(pf);
 
-  fprintf(f_out, "Min element in tree: ");
-  time = clock();
-  music_plain_print_p2_e3(f_out, tree_find_min(t));
-  time = clock() - time;
-  fprintf(f_out, " - %ld ticks (%f seconds)\n", (long)time, ((float) time) / CLOCKS_PER_SEC);
-
-  fprintf(f_out, "Max element in tree: ");
-  time = clock();
-  music_plain_print_p2_e3(f_out, tree_find_max(t));
-  time = clock() - time;
-  fprintf(f_out, " - %ld ticks (%f seconds)\n", (long)time, ((float) time) / CLOCKS_PER_SEC);
-
-  time = clock();
-  if (tree_contains(t, m) == TRUE) {
-    fprintf(f_out, "Element found");
-    time = clock() - time;
-    fprintf(f_out, " - %ld ticks (%f seconds)\n", (long)time, ((float) time) / CLOCKS_PER_SEC);
-
-    fprintf(f_out, "Removing element in tree: ");
-    time = clock();
-    fprintf(f_out, "%s", tree_remove(t, m) == OK ? "OK" : "ERR");
-    time = clock() - time;
-    fprintf(f_out, " - %ld ticks (%f seconds)\n", (long)time, ((float) time) / CLOCKS_PER_SEC);
-    fprintf(f_out, "Tree size: %ld\nTree depth: %d\n", tree_size(t), tree_depth(t));
-
-  } else {
-    fprintf(f_out, "Element NOT found");
-    time = clock() - time;
-    fprintf(f_out, " - %ld ticks (%f seconds)\n", (long)time, ((float) time) / CLOCKS_PER_SEC);
+    return -1;
   }
-  
-  tree_destroy(t);
-  free(songs);
-  mainCleanUp (EXIT_SUCCESS, r, f_in);
+
+  n_songs = radio_getnumber(r);
+  for (i = 0; i < n_songs; i++)
+  {
+    m = radio_getMusic(r, i);
+    if (m)
+    {
+      tree_insert(tree, m);
+    }
+  }
+
+  if (!(min_music = music_init()))
+  {
+    printf("Error while creating min music\n");
+    tree_destroy(tree);
+    radio_free(r);
+    fclose(pf);
+
+    return -1;
+  }
+
+  if (music_setId(min_music, min_id) == ERROR)
+  {
+    printf("Error while setting min id\n");
+    music_free(min_music);
+    tree_destroy(tree);
+    radio_free(r);
+    fclose(pf);
+
+    return -1;
+  }
+
+  if (!(max_music = music_init()))
+  {
+    printf("Error while creating max music\n");
+    music_free(min_music);
+    tree_destroy(tree);
+    radio_free(r);
+    fclose(pf);
+
+    return -1;
+  }
+
+  if (music_setId(max_music, max_id) == ERROR)
+  {
+    printf("Error while setting max id\n");
+    music_free(min_music);
+    music_free(max_music);
+    tree_destroy(tree);
+    radio_free(r);
+    fclose(pf);
+
+    return -1;
+  }
+
+  list = tree_rangeSearch(tree, min_music, max_music);
+
+  printf("List of songs from id %ld to id %ld\n", min_id, max_id);
+  if (list)
+  {
+    list_print(stdout, list, (p_list_ele_print)music_plain_print);
+    list_free(list);
+  }
+  printf("\n");
+
+  fclose(pf);
+  music_free(min_music);
+  music_free(max_music);
+  tree_destroy(tree);
+  radio_free(r);
+
+  return 0;
 }
 
 /*
- * P1 ¿Por qué es así?, ¿hay alguna propiedad del árbol que permita explicar este comportamiento? Responde a estas preguntas en un comentario al final de p4_e1.c
-
- * RESPUESTA:
+ * P2 ¿qué características observas en la lista resultante?, ¿a qué se debe?
  *
- * Al insertar elementos en un árbol binario de búsqueda o binary search tree (BST) secuencialmente
- * y de forma ordenada con el modo sorted, el árbol empeora, transformándose en uno lineal 
- * (parecido a una lista enlazada, pero con preferencia hacia la derecha o izquierda). 
- * Debido a esto, el árbol deja de estar optimizado y la profundidad del árbol
- * pasa a ser N (en vez de log(N) si estuviera balanceado), provocando que 
- * los tiempos de inserción y de búsqueda empeoren, pasando de O(log N) a O(N).
+ * RESPUESTA:
+ * 
+ * La lista resultante está automáticamente ordenada de menor a mayor (ID ascendente).
+ * Esto se debe a que la función recursiva _tree_rangeSearch_rec realiza el 
+ * equivalente a un recorrido InOrder (rama izquierda, luego nodo actual, luego 
+ * rama derecha) pero con "poda" (saltándose ramas fuera de rango). Dado que en 
+ * un Árbol Binario de Búsqueda los elementos menores siempre están a la izquierda 
+ * y los mayores a la derecha, al insertar las canciones en la lista usando este 
+ * recorrido, inevitablemente se guardan ya ordenadas.
  */
