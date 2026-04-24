@@ -29,4 +29,8 @@ typedef enum {
     OK=1     /*!< OK output */
 } Status;
 
+typedef int (*P_ele_print)(FILE *f, const void *ele);
+
+typedef int (*P_ele_cmp)(const void *ele1, const void *ele2);
+
 #endif /* TYPES_H_ */

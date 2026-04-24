@@ -14,6 +14,51 @@ int mainCleanUp (int ret_value, Radio *r, FILE *pf) {
   exit(ret_value);
 }
 
+Music **radio_getSongsArray(Radio *r) {
+  Music **songs = NULL;
+  int i, n;
+
+  if (!r) {
+    return NULL;
+  }
+
+  n = radio_getnumber(r);
+  if (n <= 0) {
+    return NULL;
+  }
+
+  songs = malloc(sizeof(Music *) * n);
+  if (!songs) {
+    return NULL;
+  }
+
+  for (i = 0; i < n; i++) {
+    songs[i] = radio_getMusic(r, i);
+    if (!songs[i]) {
+      free(songs);
+      return NULL;
+    }
+  }
+
+  return songs;
+}
+
+int findMusicIndexById(Music **songs, int n, long music_id) {
+  int i;
+
+  if (!songs || n <= 0) {
+    return -1;
+  }
+
+  for (i = 0; i < n; i++) {
+    if (music_getId(songs[i]) == music_id) {
+      return i;
+    }
+  }
+
+  return -1;
+}
+
 void loadBalancedTree_rec(Music **sorted_data, BSTree *t, int first, int last) {
   int middle = (first + last) / 2;
   Music *m;
@@ -121,12 +166,21 @@ int main(int argc, char const *argv[]) {
 	
 	music_id = atoi(argv[2]);
 	/* REPLACE BY YOUR OWN IMPLEMENTED FUNCTIONS */
-	songs = radio_getSongs(r);
+	songs = radio_getSongsArray(r);
 	n = radio_getNumberOfMusic(r);
+	if (!songs) {
+		mainCleanUp (EXIT_FAILURE, r, f_in);
+	}
 	
-	index = _radio_findmusicById(r, music_id);
+	index = findMusicIndexById(songs, n, music_id);
+	if (index < 0) {
+		free(songs);
+		printf("Music with id %ld was not found\n", music_id);
+		mainCleanUp (EXIT_FAILURE, r, f_in);
+	}
 	m = songs[index];
 	if (m == NULL) {
+		free(songs);
 		printf("Error when initialising music with id: %ld\n", music_id);
 		mainCleanUp (EXIT_FAILURE, r, f_in);
 	}
@@ -186,5 +240,6 @@ int main(int argc, char const *argv[]) {
   }
   
   tree_destroy(t);
+  free(songs);
   mainCleanUp (EXIT_SUCCESS, r, f_in);
 }
