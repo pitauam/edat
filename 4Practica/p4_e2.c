@@ -134,11 +134,7 @@ int main(int argc, char **argv)
  *
  * RESPUESTA:
  * 
- * La lista resultante está automáticamente ordenada de menor a mayor (ID ascendente).
- * Esto se debe a que la función recursiva _tree_rangeSearch_rec realiza el 
- * equivalente a un recorrido InOrder (rama izquierda, luego nodo actual, luego 
- * rama derecha) pero con "poda" (saltándose ramas fuera de rango). Dado que en 
- * un Árbol Binario de Búsqueda los elementos menores siempre están a la izquierda 
- * y los mayores a la derecha, al insertar las canciones en la lista usando este 
- * recorrido, inevitablemente se guardan ya ordenadas.
+ * La lista esta ordenada de menor a mayor ,esto se debe a que la función recursiva _tree_rangeSearch_rec busca como rama izquierda, luego nodo actual, luego 
+ * rama derecha pero saltándose ramas fuera de rango. Dado que en un Árbol Binario de Búsqueda los elementos menores siempre están a la izquierda 
+ * y los mayores a la derecha, al insertar las canciones en la lista usando este recorrido, se guardan ya ordenadas.
  */
