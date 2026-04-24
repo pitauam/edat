@@ -374,7 +374,7 @@ int music_plain_print_p2_e3 (FILE * pf, const void * m){
     return -1;
   }
 
-  counter = fprintf(pf, "[%li, %s, %s, %hd, %d, %i]", music_getId(m), music_getTitle(m), music_getArtist(m), music_getDuration(m), music_getState(m), music_getIndex((Music*)m));
+  counter = fprintf(pf, "[%li, %s, %s, %hd, %d, %i]\n", music_getId(m), music_getTitle(m), music_getArtist(m), music_getDuration(m), music_getState(m), music_getIndex((Music*)m));
 
   return counter;
 }

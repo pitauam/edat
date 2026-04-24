@@ -48,7 +48,7 @@ int main(int argc, char **argv)
     return -1;
   }
 
-  if (!(tree = tree_init(music_plain_print, music_cmp)))
+  if (!(tree = tree_init(music_plain_print, music_cmp_id)))
   {
     printf("Error while creating tree\n");
     radio_free(r);
@@ -113,13 +113,12 @@ int main(int argc, char **argv)
 
   list = tree_rangeSearch(tree, min_music, max_music);
 
-  printf("List of songs from id %ld to id %ld\n", min_id, max_id);
+  printf("Lista de canciones desde id %ld hasta id %ld\n", min_id, max_id);
   if (list)
   {
-    list_print(stdout, list, (p_list_ele_print)music_plain_print);
+    list_print(stdout, list, (p_list_ele_print)music_plain_print_p2_e3);
     list_free(list);
   }
-  printf("\n");
 
   fclose(pf);
   music_free(min_music);
