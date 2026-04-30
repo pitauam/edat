@@ -7,6 +7,7 @@ CFLAGS= -g -Wall -pedantic
 #EJS = p4_e3
 
 EJS = p4_e1 p4_e2 
+
 #p4_e3
 EXECUTABLES = $(EJS)
 
@@ -51,10 +52,10 @@ radio.o: radio.c radio.h music.h types.h stack.h queue.h
 list.o: list.c list.h types.h
 	$(CC) $(CFLAGS) -c list.c
 
-stack.o: stack.c stack.h types.h
+stack.o: stack.c stack.h types.h music.h
 	$(CC) $(CFLAGS) -c stack.c
 
-queue.o: queue.c queue.h types.h
+queue.o: queue.c queue.h types.h 
 	$(CC) $(CFLAGS) -c queue.c
 
 #clean all .os
@@ -66,13 +67,11 @@ clean:
 
 #without valgrind
 run:
-	@echo ">>>>>>Running p4_e1 in normal mode"
+	@echo ">>>>>>Running p4_e1 a) in normal mode"
 	./p4_e1 data_music_10 8 normal
 
-	@echo ">>>>>>Running p4_e1 in sorted mode"
+	@echo ">>>>>>Running p4_e1 b) in sorted mode"
 	./p4_e1 data_music_10 8 sorted
-
-
 
 	@echo ">>>>>>Running p4_e2"
 	./p4_e2 data_music_10.txt 3 7
@@ -84,23 +83,19 @@ run:
 #	@echo ">>>>>>Running p4_e2 in sorted mode"
 #	./p4_e2 data_music_10 8 sorted
 
-
-
 #	@echo ">>>>>>Running p4_e3"
 #	./p4_e3 data_music_10.txt 300
 
 #valgrind
 runv:
-	@echo ">>>>>>Running p4_e1 in normal mode with valgrind"
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p4_e1 data_music_10 8 normal
+	@echo ">>>>>>Running p4_e1 a) in normal mode with valgrind"
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p4_e1 data_music_1K 8 normal
 
-	@echo ">>>>>>Running p4_e1 in sorted mode with valgrind"
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p4_e1 data_music_10 8 sorted
-
-
+	@echo ">>>>>>Running p4_e1 b) in sorted mode with valgrind"
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p4_e1 data_music_1K 8 sorted
 
 	@echo ">>>>>>Running p4_e2"
-	./p4_e2 data_music_10.txt 3 7
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p4_e2 data_music_1K.txt 3 7
 
 # no longer needed vvv
 #	@echo ">>>>>>Running p4_e2 in normal mode with valgrind"
@@ -108,8 +103,6 @@ runv:
 	
 #	@echo ">>>>>>Running p4_e2 in sorted mode with valgrind"
 #	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p4_e2 data_music_10 8 sorted
-
-
 
 #	@echo ">>>>>>Running p4_e3 with valgrind"
 #	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./p4_e3 data_music_10.txt 300
